@@ -1,35 +1,25 @@
 package com.pintertamas.befake
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import com.google.gson.GsonBuilder
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.pintertamas.befake.databinding.ActivityLoginBinding
-import com.pintertamas.befake.network.request.JwtRequest
-import com.pintertamas.befake.service.NetworkService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.pintertamas.befake.network.response.JwtResponse
+import com.pintertamas.befake.network.service.RetrofitService
+
 
 class LoginActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityLoginBinding
-
-    private val baseUrl: String = "http://192.168.0.34:8765"
-
-    private lateinit var service: NetworkService
+    private lateinit var network: RetrofitService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        service = Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .build()
-            .create(NetworkService::class.java)
+        network = RetrofitService()
 
         binding.btnLogin.setOnClickListener {
             val username = binding.etUsername.text.toString()
@@ -37,19 +27,32 @@ class LoginActivity : AppCompatActivity() {
 
             login(username, password)
         }
+
+        binding.btnRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
     }
 
     private fun login(username: String, password: String) {
-        try {
-            CoroutineScope(IO).launch {
-                Log.d("LoginActivity", "Logging in with: $username - $password")
-                val response = service.login(
-                    JwtRequest(username, password)
-                )
-                Log.d("LoginActivity", "jwtResponse: $response")
-            }
-        } catch (e: Exception) {
-            Log.d("LoginActivity", e.message.toString())
-        }
+        network.login(
+            username = username,
+            password = password,
+            onSuccess = this::loginSuccess,
+            onError = this::loginError,
+        )
+    }
+
+    private fun loginSuccess(responseBody: JwtResponse) {
+        Toast.makeText(
+            this,
+            "Successful login! Token: ${responseBody.jwtToken}",
+            Toast.LENGTH_SHORT
+        ).show()
+        startActivity(Intent(this, FeedActivity::class.java))
+    }
+
+    private fun loginError(e: Throwable) {
+        Toast.makeText(this, "Error during login!", Toast.LENGTH_SHORT).show()
+        e.printStackTrace()
     }
 }

@@ -1,17 +1,17 @@
 package com.pintertamas.befake.network.response
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class JwtResponse(
-    @SerializedName("userId")
+    @Json(name = "userId")
     var userId: Long?,
 
-    @SerializedName("username")
+    @Json(name = "username")
     var username: String?,
 
-    @SerializedName("email")
+    @Json(name = "email")
     var email: String?,
 
-    @SerializedName("jwtToken")
+    @Json(name = "jwtToken")
     var jwtToken: String?
 )

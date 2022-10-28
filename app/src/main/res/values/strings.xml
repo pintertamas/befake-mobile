@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">BeFake</string>
     <string name="logo">BeFake. logo</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="login">login</string>
+    <string name="befake_logo">BeFake logo</string>
+    <string name="register">REGISTER</string>
+    <string name="fullName">full name</string>
+    <string name="email">email</string>
+    <string name="biography">biography</string>
+    <string name="location">location</string>
 </resources>
