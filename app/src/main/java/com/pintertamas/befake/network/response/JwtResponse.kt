@@ -13,5 +13,5 @@ data class JwtResponse(
     var email: String?,
 
     @Json(name = "jwtToken")
-    var jwtToken: String?
+    var jwt: String?
 )
