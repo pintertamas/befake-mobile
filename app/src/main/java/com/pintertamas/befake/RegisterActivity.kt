@@ -151,7 +151,7 @@ class RegisterActivity : AppCompatActivity() {
         )
     }
 
-    private fun registrationSuccess(responseBody: UserResponse?) {
+    private fun registrationSuccess(statusCode: Int, responseBody: UserResponse?) {
         Toast.makeText(
             this,
             "Successful login! User: $responseBody",
@@ -170,8 +170,8 @@ class RegisterActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun registrationError(e: Throwable) {
-        Toast.makeText(this, "Error during registration!", Toast.LENGTH_SHORT).show()
+    private fun registrationError(statusCode: Int, e: Throwable) {
+        Toast.makeText(this, "Error $statusCode during registration!", Toast.LENGTH_SHORT).show()
         e.printStackTrace()
     }
 }

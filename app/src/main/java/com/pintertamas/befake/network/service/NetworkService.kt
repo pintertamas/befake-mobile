@@ -4,9 +4,9 @@ import com.pintertamas.befake.network.request.JwtRequest
 import com.pintertamas.befake.network.request.UserRequest
 import com.pintertamas.befake.network.response.JwtResponse
 import com.pintertamas.befake.network.response.UserResponse
+import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface NetworkService {
 
@@ -19,12 +19,21 @@ interface NetworkService {
 
     @POST("/auth/login")
     fun login(
-        //@Header("Authorization") token: String,
         @Body jwtRequest: JwtRequest
-    ) : Call<JwtResponse>
+    ): Call<JwtResponse>
 
     @POST("/user/register")
     fun register(
         @Body userRequest: UserRequest
-    ) : Call<UserResponse>
+    ): Call<UserResponse>
+
+    @GET("/user")
+    fun getUser(
+        @Query("userId") userId: Long
+    ): Call<UserResponse>
+
+    @GET("/post/{filename}")
+    fun downloadImage(
+        @Path("filename") filename: String
+    ): Call<ResponseBody>
 }

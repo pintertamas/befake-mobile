@@ -2,26 +2,47 @@ package com.pintertamas.befake.network.service
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.pintertamas.befake.network.request.JwtRequest
 import com.pintertamas.befake.network.request.UserRequest
 import com.pintertamas.befake.network.response.JwtResponse
 import com.pintertamas.befake.network.response.UserResponse
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import kotlin.concurrent.thread
 
-class RetrofitService {
+
+class RetrofitService() {
 
     private val networkService: NetworkService
+    private var token: String = ""
+
+    constructor(token: String) : this() {
+        this.token = token
+        Log.d("RETROFIT_SERVICE", "Creating RetrofitService with token: $token")
+    }
+
 
     init {
+        val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(Interceptor { chain ->
+            val newRequest: Request = chain.request().newBuilder()
+                .addHeader("Authorization", "Bearer $token")
+                .build()
+            chain.proceed(newRequest)
+        }).build()
         val moshi = Moshi.Builder()
             .addLast(KotlinJsonAdapterFactory())
             .build()
         val retrofit = Retrofit.Builder()
+            .client(client)
             .baseUrl(NetworkService.ENDPOINT_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
@@ -31,17 +52,21 @@ class RetrofitService {
 
     private fun <T> runCallOnBackgroundThread(
         call: Call<T>,
-        onSuccess: (T) -> Unit,
-        onError: (Throwable) -> Unit
+        onSuccess: (Int, T) -> Unit,
+        onError: (Int, Throwable) -> Unit
     ) {
+        Log.d("RETROFIT_SERVICE", call.request().toString())
         val handler = Handler(Looper.getMainLooper()!!)
         thread {
+            var response: Response<T>? = null
             try {
-                val response = call.execute().body()!!
-                handler.post { onSuccess(response) }
+                response = call.execute()
+                val responseBody = response.body()!!
+                handler.post { onSuccess(response.code(), responseBody) }
             } catch (e: Exception) {
+                val code: Int = response?.code() ?: 500
                 e.printStackTrace()
-                handler.post { onError(e) }
+                handler.post { onError(code, e) }
             }
         }
     }
@@ -49,8 +74,8 @@ class RetrofitService {
     fun login(
         username: String,
         password: String,
-        onSuccess: (JwtResponse) -> Unit,
-        onError: (Throwable) -> Unit
+        onSuccess: (Int, JwtResponse) -> Unit,
+        onError: (Int, Throwable) -> Unit
     ) {
         val loginRequest = networkService.login(JwtRequest(username, password))
         runCallOnBackgroundThread(loginRequest, onSuccess, onError)
@@ -63,8 +88,8 @@ class RetrofitService {
         email: String,
         bibliography: String?,
         location: String?,
-        onSuccess: (UserResponse) -> Unit,
-        onError: (Throwable) -> Unit
+        onSuccess: (Int, UserResponse) -> Unit,
+        onError: (Int, Throwable) -> Unit
     ) {
         val registerRequest = networkService.register(
             UserRequest(
@@ -77,6 +102,24 @@ class RetrofitService {
             )
         )
         runCallOnBackgroundThread(registerRequest, onSuccess, onError)
+    }
+
+    fun getUser(
+        userId: Long,
+        onSuccess: (Int, UserResponse) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val getUserRequest = networkService.getUser(userId)
+        runCallOnBackgroundThread(getUserRequest, onSuccess, onError)
+    }
+
+    fun downloadImage(
+        filename: String,
+        onSuccess: (Int, ResponseBody) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val downloadImageRequest = networkService.downloadImage(filename)
+        runCallOnBackgroundThread(downloadImageRequest, onSuccess, onError)
     }
 
 }

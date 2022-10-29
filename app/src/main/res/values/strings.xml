@@ -10,4 +10,6 @@
     <string name="email">email</string>
     <string name="biography">biography</string>
     <string name="location">location</string>
+    <string name="add_user_button">Add user button</string>
+    <string name="profile_picture_in_a_circle">profile picture in a circle</string>
 </resources>

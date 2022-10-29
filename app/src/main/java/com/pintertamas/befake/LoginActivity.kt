@@ -102,7 +102,7 @@ class LoginActivity : AppCompatActivity() {
         )
     }
 
-    private fun loginSuccess(responseBody: JwtResponse) {
+    private fun loginSuccess(statusCode: Int, responseBody: JwtResponse) {
         Toast.makeText(
             this,
             "Successful login! Token: ${responseBody.jwt}",
@@ -122,8 +122,8 @@ class LoginActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    private fun loginError(e: Throwable) {
-        Toast.makeText(this, "Error during login!", Toast.LENGTH_SHORT).show()
+    private fun loginError(statusCode: Int, e: Throwable) {
+        Toast.makeText(this, "Error $statusCode during login!", Toast.LENGTH_SHORT).show()
         e.printStackTrace()
     }
 }

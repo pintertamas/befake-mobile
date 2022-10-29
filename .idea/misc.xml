@@ -7,10 +7,12 @@
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/ic_befake_logo.xml" value="0.3085" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/ic_eye_solid.xml" value="0.1935" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/ic_key_solid.xml" value="0.1935" />
+        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/ic_user_plus_solid.xml" value="0.358" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/ic_user_solid.xml" value="0.1935" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/login_input.xml" value="0.1925" />
-        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/activity_feed.xml" value="0.18541666666666667" />
-        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/activity_login.xml" value="0.33" />
+        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/profile_picture_shape.xml" value="0.349" />
+        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/activity_feed.xml" value="0.22" />
+        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/activity_register.xml" value="0.25" />
       </map>
     </option>
