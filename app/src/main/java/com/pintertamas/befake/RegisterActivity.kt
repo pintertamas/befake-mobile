@@ -1,17 +1,16 @@
 package com.pintertamas.befake
 
 import android.content.Intent
-import android.net.wifi.hotspot2.pps.Credential
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.pintertamas.befake.databinding.ActivityRegisterBinding
 import com.pintertamas.befake.network.request.JwtRequest
-import com.pintertamas.befake.network.request.UserRequest
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
+import com.pintertamas.befake.constant.Constants
+import com.pintertamas.befake.databinding.CustomErrorSnackbarBinding
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -47,7 +46,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.etUsername.addTextChangedListener { text ->
-            if (text.toString().length < 4) {
+            if (text.toString().length < 4 || text.toString().length > 16) {
                 binding.etUsername.setTextColor(
                     ContextCompat.getColor(
                         baseContext,
@@ -152,11 +151,11 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun registrationSuccess(statusCode: Int, responseBody: UserResponse?) {
-        Toast.makeText(
+        Constants.showSuccessSnackbar(
             this,
-            "Successful login! User: $responseBody",
-            Toast.LENGTH_SHORT
-        ).show()
+            layoutInflater,
+            "Successful registration! Welcome ${responseBody?.username}"
+        )
         startActivity(
             Intent(this, LoginActivity::class.java)
                 .putExtra(
@@ -171,7 +170,10 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun registrationError(statusCode: Int, e: Throwable) {
-        Toast.makeText(this, "Error $statusCode during registration!", Toast.LENGTH_SHORT).show()
+        var errorMessage = ""
+        if (statusCode == 400) errorMessage = "User already exists"
+        if (statusCode == 500) errorMessage = "Something unexpected happened"
+        Constants.showErrorSnackbar(this, layoutInflater, errorMessage)
         e.printStackTrace()
     }
 }

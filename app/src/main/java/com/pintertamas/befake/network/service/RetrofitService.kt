@@ -61,6 +61,8 @@ class RetrofitService() {
             var response: Response<T>? = null
             try {
                 response = call.execute()
+                Log.d("RESPONSE_CODE", response.code().toString())
+                if (response == null || response.code() != 200) throw Exception()
                 val responseBody = response.body()!!
                 handler.post { onSuccess(response.code(), responseBody) }
             } catch (e: Exception) {

@@ -8,11 +8,13 @@
     tools:context=".LoginActivity">
 
     <ImageView
+        android:scaleType="fitCenter"
         android:id="@+id/logo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginBottom="50dp"
         android:contentDescription="@string/befake_logo"
-        android:paddingBottom="50dp"
+        android:paddingBottom="0dp"
         android:src="@drawable/ic_befake_logo"
         app:layout_constraintBottom_toTopOf="@+id/ll_login" />
 

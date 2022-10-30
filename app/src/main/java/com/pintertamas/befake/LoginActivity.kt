@@ -4,10 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import com.pintertamas.befake.constant.Constants
 import com.pintertamas.befake.databinding.ActivityLoginBinding
 import com.pintertamas.befake.network.response.JwtResponse
 import com.pintertamas.befake.network.service.RetrofitService
@@ -103,18 +104,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginSuccess(statusCode: Int, responseBody: JwtResponse) {
-        Toast.makeText(
-            this,
-            "Successful login! Token: ${responseBody.jwt}",
-            Toast.LENGTH_SHORT
-        ).show()
+        Log.d("LOGIN_SUCCESSFUL", "Token: ${responseBody.jwt}")
         saveUserDetails(responseBody)
         startActivity(Intent(this, FeedActivity::class.java))
         finish()
     }
 
     private fun saveUserDetails(jwtResponse: JwtResponse) {
-        val editor:SharedPreferences.Editor =  sharedPreferences.edit()
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
         editor.putLong("userId", jwtResponse.userId!!)
         editor.putString("username", jwtResponse.username)
         editor.putString("email", jwtResponse.email)
@@ -123,7 +120,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginError(statusCode: Int, e: Throwable) {
-        Toast.makeText(this, "Error $statusCode during login!", Toast.LENGTH_SHORT).show()
+        var errorMessage = ""
+        if (statusCode == 400) errorMessage = "Wrong credentials"
+        if (statusCode == 500) errorMessage = "Something unexpected happened"
+        Constants.showErrorSnackbar(this, layoutInflater, errorMessage)
         e.printStackTrace()
     }
 }

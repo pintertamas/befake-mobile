@@ -53,5 +53,6 @@ dependencies {
     //implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     // CardView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-
+    // Custom snakbar
+    implementation 'com.github.kishandonga:custom-snackbar:1.1'
 }

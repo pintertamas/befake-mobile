@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.pintertamas.befake.constant.Constants
 import com.pintertamas.befake.databinding.ActivityFeedBinding
 import com.pintertamas.befake.network.response.JwtResponse
 import com.pintertamas.befake.network.response.UserResponse
@@ -34,7 +35,7 @@ class FeedActivity : AppCompatActivity() {
         network = RetrofitService(token!!)
         getUser(userId)
 
-
+        Constants.showSuccessSnackbar(this, layoutInflater, "Successful login!")
 
         binding.jwt.text = token.toString()
     }
