@@ -12,6 +12,7 @@ import com.pintertamas.befake.databinding.ActivityFeedBinding
 import com.pintertamas.befake.network.response.JwtResponse
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
+import com.squareup.picasso.Picasso
 import okhttp3.ResponseBody
 
 class FeedActivity : AppCompatActivity() {
@@ -19,7 +20,8 @@ class FeedActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFeedBinding
     private lateinit var network: RetrofitService
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var user: UserResponse
+    private var user: UserResponse? = null
+    private var profilePicture: String = ""
 
     private val sharedPrefName = "user_shared_preference"
 
@@ -51,9 +53,12 @@ class FeedActivity : AppCompatActivity() {
     private fun getUserSuccess(statusCode: Int, responseBody: UserResponse) {
         Log.d(
             "GET_USER",
-            "Successfully queried user: $responseBody"
+            "Successfully queried user: $responseBody Status code: $statusCode"
         )
         user = responseBody
+        if (user!!.profilePicture != null) {
+            getProfilePictureUrl(user!!.id.toLong())
+        }
     }
 
     private fun getUserError(statusCode: Int, e: Throwable) {
@@ -61,23 +66,33 @@ class FeedActivity : AppCompatActivity() {
         e.printStackTrace()
     }
 
-    private fun downloadImage(filename: String) {
-        network.downloadImage(
+    private fun getProfilePictureUrl(userId: Long) {
+        network.getProfilePictureUrl(
+            userId = userId,
+            onSuccess = this::getImageUrlSuccess,
+            onError = this::getImageUrlError
+        )
+    }
+
+    /*private fun getImageUrl(filename: String) {
+        network.getImageUrl(
             filename = filename,
-            onSuccess = this::downloadImageSuccess,
-            onError = this::downloadImageError
+            onSuccess = this::getImageUrlSuccess,
+            onError = this::getImageUrlError
         )
-    }
+    }*/
 
-    private fun downloadImageSuccess(statusCode: Int, responseBody: ResponseBody) {
+    private fun getImageUrlSuccess(statusCode: Int, responseBody: ResponseBody) {
         Log.d(
-            "DOWNLOAD_IMAGE",
-            "Successfully downloaded image: $responseBody"
+            "GET_IMAGE_URL",
+            "Successfully got image url: $responseBody Status code: $statusCode"
         )
+        profilePicture = responseBody.string()
+        Picasso.get().load(profilePicture).into(binding.btnProfile)
     }
 
-    private fun downloadImageError(statusCode: Int, e: Throwable) {
-        Log.e("DOWNLOAD_IMAGE", "Error $statusCode during image download!")
+    private fun getImageUrlError(statusCode: Int, e: Throwable) {
+        Log.e("GET_IMAGE_URL", "Error $statusCode during image download!")
         e.printStackTrace()
     }
 }

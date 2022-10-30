@@ -32,8 +32,13 @@ interface NetworkService {
         @Query("userId") userId: Long
     ): Call<UserResponse>
 
-    @GET("/post/{filename}")
-    fun downloadImage(
-        @Path("filename") filename: String
+    @GET("/user/profile-picture/{userId}")
+    fun getProfilePictureUrl(
+        @Path("userId") userId: Long
     ): Call<ResponseBody>
+
+    @GET("/post/{filename}")
+    fun getImageUrl(
+        @Path("filename") filename: String
+    ): Call<String>
 }

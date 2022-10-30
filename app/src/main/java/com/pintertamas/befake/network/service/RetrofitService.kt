@@ -16,6 +16,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.awaitResponse
 import retrofit2.converter.moshi.MoshiConverterFactory
 import kotlin.concurrent.thread
 
@@ -27,7 +28,6 @@ class RetrofitService() {
 
     constructor(token: String) : this() {
         this.token = token
-        Log.d("RETROFIT_SERVICE", "Creating RetrofitService with token: $token")
     }
 
 
@@ -115,13 +115,23 @@ class RetrofitService() {
         runCallOnBackgroundThread(getUserRequest, onSuccess, onError)
     }
 
-    fun downloadImage(
+    fun getProfilePictureUrl(
+        userId: Long,
+        onSuccess: (Int, ResponseBody) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val getProfilePictureUrlRequest = networkService.getProfilePictureUrl(userId)
+        Log.d("GET_PROFILE_PICTURE", getProfilePictureUrlRequest.request().toString())
+        runCallOnBackgroundThread(getProfilePictureUrlRequest, onSuccess, onError)
+    }
+
+    /*fun getImageUrl(
         filename: String,
         onSuccess: (Int, ResponseBody) -> Unit,
         onError: (Int, Throwable) -> Unit
     ) {
-        val downloadImageRequest = networkService.downloadImage(filename)
-        runCallOnBackgroundThread(downloadImageRequest, onSuccess, onError)
-    }
+        val getImageUrlRequest = networkService.getImageUrl(filename)
+        runCallOnBackgroundThread(getImageUrlRequest, onSuccess, onError)
+    }*/
 
 }
