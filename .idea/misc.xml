@@ -6,7 +6,9 @@
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable-anydpi/ic_error_sign.xml" value="0.358" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable-xxxhdpi/snackbar_background.xml" value="0.239" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/button_background.xml" value="0.3625" />
+        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/edge_button_background.xml" value="0.358" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/ic_befake_logo.xml" value="0.3085" />
+        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/ic_ellipsis_vertical_solid.xml" value="0.358" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/ic_eye_solid.xml" value="0.1935" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/ic_key_outline.xml" value="0.358" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/drawable/ic_key_solid.xml" value="0.1935" />
@@ -21,6 +23,9 @@
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/custom_error_snackbar.xml" value="0.33" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/custom_error_toast.xml" value="0.5" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/custom_success_snackbar.xml" value="0.5" />
+        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/fragment_create_post.xml" value="0.3625" />
+        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/fragment_new_post.xml" value="0.3625" />
+        <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/post_item.xml" value="0.45829042224510813" />
       </map>
     </option>
   </component>

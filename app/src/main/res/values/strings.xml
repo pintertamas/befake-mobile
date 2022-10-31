@@ -17,4 +17,9 @@
     <string name="error">ERROR! Something unexpected happened</string>
     <string name="success">SUCCESS</string>
     <string name="success_sign">success sign</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="post_new_befake">Post a BeFake</string>
+    <string name="posted_ago">23min late</string>
+    <string name="settings_button">settings button</string>
 </resources>

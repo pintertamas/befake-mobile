@@ -5,11 +5,15 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.FragmentTransaction
 import com.pintertamas.befake.constant.Constants
 import com.pintertamas.befake.databinding.ActivityFeedBinding
+import com.pintertamas.befake.fragment.ListPostsFragment
+import com.pintertamas.befake.fragment.NewPostFragment
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.awaitAll
 import okhttp3.ResponseBody
 
 class FeedActivity : AppCompatActivity() {
@@ -36,13 +40,17 @@ class FeedActivity : AppCompatActivity() {
         getUser(userId)
         getProfilePictureUrl(userId)
         canUserPost()
-        getBeFakeTime()
 
-        Log.d("ASD", canUserPost.toString() + beFakeTime)
+        if (savedInstanceState == null) {
+            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+
+            //transaction.add(R.id.new_post_fragment, NewPostFragment.newInstance(), "NEW_POST")
+            transaction.add(R.id.list_posts_fragment, ListPostsFragment.newInstance(), "LIST_POSTS")
+
+            transaction.commit()
+        }
 
         Constants.showSuccessSnackbar(this, layoutInflater, "Successful login!")
-
-        binding.jwt.text = token.toString()
     }
 
     private fun getUser(userId: Long) {
@@ -58,10 +66,6 @@ class FeedActivity : AppCompatActivity() {
             "GET_USER",
             "Successfully queried user: $responseBody Status code: $statusCode"
         )
-        //user = responseBody
-        //if (user!!.profilePicture != null) {
-        //    getProfilePictureUrl(user!!.id.toLong())
-        //}
     }
 
     private fun getUserError(statusCode: Int, e: Throwable) {
@@ -104,7 +108,6 @@ class FeedActivity : AppCompatActivity() {
             "Successful canUserPost call. $responseBody Status code: $statusCode"
         )
         canUserPost = responseBody
-        binding.canUserPost.text = canUserPost.toString()
     }
 
     private fun canUserPostError(statusCode: Int, e: Throwable) {
@@ -112,7 +115,7 @@ class FeedActivity : AppCompatActivity() {
         e.printStackTrace()
     }
 
-    private fun getBeFakeTime() {
+    /*private fun getBeFakeTime() {
         network.getBeFakeTime(
             onSuccess = this::getBeFakeTimeSuccess,
             onError = this::getBeFakeTimeError
@@ -131,5 +134,5 @@ class FeedActivity : AppCompatActivity() {
     private fun getBeFakeTimeError(statusCode: Int, e: Throwable) {
         Log.e("GET_BEFAKE_TIME", "Error $statusCode during getting befake time!")
         e.printStackTrace()
-    }
+    }*/
 }

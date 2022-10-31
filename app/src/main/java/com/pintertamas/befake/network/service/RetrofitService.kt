@@ -76,28 +76,6 @@ class RetrofitService() {
         }
     }
 
-    private fun <T> runCallSynchronously(
-        call: Call<T>,
-        onSuccess: (Int, T) -> Unit,
-        onError: (Int, Throwable) -> Unit
-    ): T? {
-        Log.d("RETROFIT_SERVICE", call.request().toString())
-        var response: Response<T>? = null
-        return try {
-            response = call.execute()
-            Log.d("RESPONSE_CODE", response.code().toString())
-            if (response == null || response.code() != 200) throw Exception()
-            val responseBody = response.body()!!
-            onSuccess(response.code(), responseBody)
-            responseBody
-        } catch (e: Exception) {
-            val code: Int = response?.code() ?: 500
-            e.printStackTrace()
-            onError(code, e)
-            null
-        }
-    }
-
     fun login(
         username: String,
         password: String,
