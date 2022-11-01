@@ -43,17 +43,6 @@ class ListPostsFragment : Fragment(), PostsRecyclerViewAdapter.PostListItemClick
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-
-        /*binding.postsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0 && binding.userCard.userCardWidget.visibility == View.VISIBLE) {
-                    //Hide
-                } else if (dy < 0 && binding.userCard.userCardWidget.visibility != View.VISIBLE) {
-                    //Show
-                }
-            }
-        })*/
     }
 
     override fun onAttach(context: Context) {

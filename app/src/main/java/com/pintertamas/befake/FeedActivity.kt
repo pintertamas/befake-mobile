@@ -21,7 +21,7 @@ class FeedActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFeedBinding
     private lateinit var network: RetrofitService
     private lateinit var sharedPreferences: SharedPreferences
-    private var profilePicture: String = ""
+    private var profilePicture: String? = null
     private var canUserPost: Boolean = false
     private var beFakeTime: String? = null
 
@@ -87,7 +87,9 @@ class FeedActivity : AppCompatActivity() {
             "Successfully got image url: $responseBody Status code: $statusCode"
         )
         profilePicture = responseBody.string()
-        Picasso.get().load(profilePicture).into(binding.btnProfile)
+        println(profilePicture)
+        if (profilePicture != null)
+            Picasso.get().load(profilePicture).into(binding.btnProfile)
     }
 
     private fun getImageUrlError(statusCode: Int, e: Throwable) {
