@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:background="@color/primary"
-    android:visibility="visible"
     android:id="@+id/user_card_widget"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/primary"
+    android:visibility="visible">
 
     <include
         android:id="@+id/user_detail_include"
@@ -83,6 +83,7 @@
         app:layout_constraintTop_toTopOf="@id/user_card" />
 
     <TextView
+        android:id="@+id/comments"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"

@@ -13,6 +13,7 @@ import com.pintertamas.befake.R
 import com.pintertamas.befake.adapter.PostsRecyclerViewAdapter
 import com.pintertamas.befake.databinding.FragmentListPostsBinding
 import com.pintertamas.befake.network.response.PostResponse
+import com.pintertamas.befake.network.response.UserResponse
 
 class ListPostsFragment : Fragment(), PostsRecyclerViewAdapter.PostListItemClickListener {
 
@@ -66,6 +67,17 @@ class ListPostsFragment : Fragment(), PostsRecyclerViewAdapter.PostListItemClick
     }
 
     private fun setupRecyclerView() {
+        val user = UserResponse(
+            1L,
+            "Tomi",
+            "secretpasswordencrypted",
+            "Tamas Pinter",
+            "pintertamas99@gmail.com",
+            "Hello there",
+            "Budapest",
+            "2022-Oct-23_22:32:24_main.jpg",
+            "2022.11.01.",
+        )
         val demoData = mutableListOf(
             PostResponse(
                 1L,
@@ -73,10 +85,10 @@ class ListPostsFragment : Fragment(), PostsRecyclerViewAdapter.PostListItemClick
                 "2022-Oct-23_22:32:24_main.jpg",
                 "2022-Oct-31_15:24:48_selfie.png",
                 "description1",
-                location = "Budapest",
-                postingTime = "2022.11.01.",
-                beFakeTime = "2011.11.01.",
-                deleted = false
+                "Budapest",
+                "2022.11.01.",
+                "2011.11.01.",
+                false
             ),
             PostResponse(
                 2L,
@@ -105,6 +117,7 @@ class ListPostsFragment : Fragment(), PostsRecyclerViewAdapter.PostListItemClick
         llm.orientation = LinearLayoutManager.VERTICAL
         postsRecyclerViewAdapter = PostsRecyclerViewAdapter()
         postsRecyclerViewAdapter.itemClickListener = this
+        postsRecyclerViewAdapter.setUserCard(user)
         postsRecyclerViewAdapter.addAll(demoData)
         val list = binding.root.findViewById<RecyclerView>(R.id.posts_recycler_view)
         list.layoutManager = llm

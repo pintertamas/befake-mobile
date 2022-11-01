@@ -1,7 +1,7 @@
 package com.pintertamas.befake.network.response
 
 data class UserResponse(
-    var id: String,
+    var id: Long,
     var username: String,
     var password: String,
     var fullName: String?,
