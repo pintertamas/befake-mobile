@@ -33,9 +33,11 @@ class NewPostFragment : Fragment() {
         binding.postBefakeButton.setOnClickListener {
             Log.d("FRAGMENT", "Attached")
             val fr = fragmentManager?.beginTransaction()
-            fr?.replace(R.id.new_post_fragment, newInstance(), "newPost")
+            fr?.replace(R.id.list_posts_fragment, newInstance(), "LIST_POSTS")
             fr?.commit()
         }
+
+        Log.d("NEW_POST", "Click")
 
         return binding.root
     }
