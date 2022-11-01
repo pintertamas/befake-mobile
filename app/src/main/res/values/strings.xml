@@ -22,4 +22,10 @@
     <string name="post_new_befake">Post a BeFake</string>
     <string name="posted_ago">23min late</string>
     <string name="settings_button">settings button</string>
+    <string name="main_photo">main photo</string>
+    <string name="description">description</string>
+    <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
+    <string name="comments">See n comment</string>
+    <string name="reaction_icon">reaction icon</string>
+    <string name="comment_icon">comment icon</string>
 </resources>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_top_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/primary"
+    android:orientation="horizontal">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civ_profile_picture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="5dp"
+        android:contentDescription="@string/profile_picture_in_a_circle"
+        android:padding="5dp"
+        android:src="@drawable/profile_placeholder" />
+
+    <TextView
+        android:id="@+id/tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/username"
+        android:textColor="@color/light_grey"
+        android:textStyle="bold" />
+
+    <!-- empty space that will fill "subtotal" and "price", using layout_weight -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/tv_post_time"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/posted_ago"
+        android:textColor="@color/light_grey"
+        android:textSize="12sp" />
+
+    <ImageButton
+        android:id="@+id/ib_settings"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="25dp"
+        android:background="@color/transparent"
+        android:contentDescription="@string/settings_button"
+        android:paddingVertical="20dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/ic_ellipsis_vertical_solid" />
+
+</LinearLayout>

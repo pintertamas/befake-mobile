@@ -5,64 +5,130 @@
     android:layout_height="wrap_content"
     android:background="@color/primary">
 
-    <LinearLayout
-        android:id="@+id/ll_top_row"
+    <include
+        android:id="@+id/user_detail_include"
+        layout="@layout/user_detail_linear_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/post_container"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/main_photo_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_detail_include" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/main_photo_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_edge_border_background"
+        android:elevation="0dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/post_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/post_container">
+
+        <include
+            android:id="@+id/main_photo"
+            layout="@layout/image_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/selfie_photo_card"
+        android:layout_width="150dp"
+        android:layout_height="225dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/rounded_edge_border_background"
+        android:elevation="0dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/post_container">
+
+        <include
+            android:id="@+id/selfie_photo"
+            layout="@layout/image_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/profile_placeholder" />
+    </androidx.cardview.widget.CardView>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/reaction3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginVertical="20dp"
+        android:layout_marginStart="30dp"
+        android:src="@color/blue"
+        app:layout_constraintBottom_toBottomOf="@id/main_photo_card"
+        app:layout_constraintStart_toStartOf="@id/reaction2" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/reaction2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginVertical="20dp"
+        android:layout_marginStart="30dp"
+        android:src="@color/dark_blue"
+        app:layout_constraintBottom_toBottomOf="@id/main_photo_card"
+        app:layout_constraintStart_toStartOf="@id/reaction1" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/reaction1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginVertical="20dp"
+        android:layout_marginStart="20dp"
+        android:src="@color/primary"
+        app:layout_constraintBottom_toBottomOf="@id/main_photo_card"
+        app:layout_constraintStart_toStartOf="@id/main_photo_card" />
+
+    <ImageView
+        android:id="@+id/comment_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:contentDescription="@string/comment_icon"
+        android:src="@drawable/ic_message_solid"
+        app:layout_constraintBottom_toTopOf="@id/reaction_icon"
+        app:layout_constraintEnd_toEndOf="@id/main_photo_card" />
+
+    <ImageView
+        android:id="@+id/reaction_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:contentDescription="@string/reaction_icon"
+        android:src="@drawable/ic_face_grin_solid"
+        app:layout_constraintBottom_toBottomOf="@id/main_photo_card"
+        app:layout_constraintEnd_toEndOf="@id/main_photo_card" />
+
+    <TextView
+        android:id="@+id/comments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_margin="10dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="10dp"
+        android:text="@string/comments"
+        android:textColor="@color/dark_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_photo_card" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/civ_profile_picture"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginVertical="5dp"
-            android:contentDescription="@string/profile_picture_in_a_circle"
-            android:padding="5dp"
-            android:src="@drawable/profile_placeholder"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_username"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/username"
-            android:textColor="@color/light_grey"
-            android:textStyle="bold" />
-
-        <!-- empty space that will fill "subtotal" and "price", using layout_weight -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/tv_post_time"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/posted_ago"
-            android:textColor="@color/light_grey"
-            android:textSize="12sp" />
-
-        <ImageButton
-            android:id="@+id/ib_settings"
-            android:layout_width="10dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="25dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/settings_button"
-            android:paddingVertical="20dp"
-            android:scaleType="fitStart"
-            android:src="@drawable/ic_ellipsis_vertical_solid" />
-
-    </LinearLayout>
+    <View
+        style="@style/Divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/comments" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
