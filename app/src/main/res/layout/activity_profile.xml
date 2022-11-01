@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary"
+    tools:context=".ProfileActivity">
+
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:contentDescription="@string/left_arrow_button"
+            android:src="@drawable/ic_arrow_left_solid" />
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/civ_profile_picture"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginHorizontal="120dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/profile_placeholder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <TextView
+        android:id="@+id/et_full_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/full_name"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/civ_profile_picture" />
+
+    <TextView
+        android:id="@+id/et_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/username_tag"
+        android:textColor="@color/medium_grey"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_full_name" />
+
+    <TextView
+        android:id="@+id/et_biography"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:paddingVertical="10dp"
+        android:text="@string/biography"
+        android:textColor="@color/light_grey"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_username" />
+
+    <ImageView
+        android:id="@+id/ic_calendar"
+        android:layout_width="14sp"
+        android:layout_height="14sp"
+        android:layout_marginHorizontal="20dp"
+        android:contentDescription="@string/calendar_icon"
+        android:src="@drawable/ic_calendar_days_solid"
+        app:layout_constraintBottom_toBottomOf="@id/et_calendar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_biography" />
+
+    <TextView
+        android:id="@+id/et_calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:text="@string/joined_at"
+        android:textColor="@color/medium_grey"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/ic_calendar"
+        app:layout_constraintTop_toBottomOf="@id/et_biography" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/edit_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="20dp"
+        android:elevation="0dp"
+        android:insetTop="12dp"
+        android:insetBottom="12dp"
+        android:padding="0dp"
+        android:text="@string/edit_my_profile"
+        android:textColor="@color/primary"
+        android:textSize="12sp"
+        app:backgroundTint="@color/light_grey"
+        app:cornerRadius="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_calendar" />
+
+    <TextView
+        android:id="@+id/your_memories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:text="@string/your_memories"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_button" />
+
+    <ImageView
+        android:layout_width="14sp"
+        android:layout_height="14sp"
+        android:layout_marginEnd="5dp"
+        android:contentDescription="@string/only_visible_to_you"
+        android:src="@drawable/ic_lock_solid"
+        app:layout_constraintBottom_toBottomOf="@id/your_memories"
+        app:layout_constraintEnd_toStartOf="@+id/only_visible_to_you"
+        app:layout_constraintTop_toTopOf="@id/your_memories" />
+
+    <TextView
+        android:id="@+id/only_visible_to_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:text="@string/only_visible_to_you"
+        android:textColor="@color/medium_grey"
+        android:textSize="12sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@id/your_memories"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/your_memories" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/memories_container_card"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@color/primaryAccent"
+        android:elevation="0dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/your_memories" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tba"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/memories_container_card"
+        app:layout_constraintEnd_toEndOf="@id/memories_container_card"
+        app:layout_constraintStart_toStartOf="@id/memories_container_card"
+        app:layout_constraintTop_toTopOf="@id/memories_container_card" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -87,7 +87,7 @@
                 android:layout_height="match_parent"
                 android:autofillHints="true"
                 android:background="@drawable/login_input"
-                android:hint="@string/fullName"
+                android:hint="@string/full_name"
                 android:inputType="textPersonName" />
 
         </com.google.android.material.textfield.TextInputLayout>

@@ -1,14 +1,15 @@
 <resources>
     <string name="app_name">BeFake</string>
     <string name="logo">BeFake. logo</string>
-    <string name="username">username</string>
+    <string name="username">randomusername567</string>
+    <string name="username_tag">\@randomusername567</string>
+    <string name="full_name">Sadie Sampleman</string>
     <string name="password">password</string>
     <string name="login">login</string>
     <string name="befake_logo">BeFake logo</string>
     <string name="register">REGISTER</string>
-    <string name="fullName">full name</string>
     <string name="email">email</string>
-    <string name="biography">biography</string>
+    <string name="biography">This is my biography hello everyone!</string>
     <string name="location">location</string>
     <string name="add_user_button">Add user button</string>
     <string name="profile_picture_in_a_circle">profile picture in a circle</string>
@@ -28,4 +29,11 @@
     <string name="comments">See n comment</string>
     <string name="reaction_icon">reaction icon</string>
     <string name="comment_icon">comment icon</string>
+    <string name="left_arrow_button">left arrow button</string>
+    <string name="joined_at">Joined BeFake in September 2022</string>
+    <string name="calendar_icon">calendar icon</string>
+    <string name="edit_my_profile">Edit my profile</string>
+    <string name="your_memories">Your Memories</string>
+    <string name="only_visible_to_you">Only visible to you.</string>
+    <string name="tba">TBA</string>
 </resources>
