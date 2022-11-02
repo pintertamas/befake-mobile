@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary"
-    tools:context=".ProfileActivity">
+    tools:context=".fragment.ProfileFragment">
 
     <LinearLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -42,7 +42,7 @@
         android:layout_marginTop="20dp"
         android:text="@string/full_name"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/civ_profile_picture" />
 
@@ -54,7 +54,7 @@
         android:layout_marginTop="5dp"
         android:text="@string/username_tag"
         android:textColor="@color/medium_grey"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_full_name" />
@@ -67,15 +67,15 @@
         android:paddingVertical="10dp"
         android:text="@string/biography"
         android:textColor="@color/light_grey"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_username" />
 
     <ImageView
         android:id="@+id/ic_calendar"
-        android:layout_width="14sp"
-        android:layout_height="14sp"
+        android:layout_width="16sp"
+        android:layout_height="16sp"
         android:layout_marginHorizontal="20dp"
         android:contentDescription="@string/calendar_icon"
         android:src="@drawable/ic_calendar_days_solid"
@@ -90,7 +90,7 @@
         android:layout_marginHorizontal="5dp"
         android:text="@string/joined_at"
         android:textColor="@color/medium_grey"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@id/ic_calendar"
         app:layout_constraintTop_toBottomOf="@id/et_biography" />
 
@@ -101,12 +101,12 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="20dp"
         android:elevation="0dp"
-        android:insetTop="12dp"
-        android:insetBottom="12dp"
+        android:insetTop="10dp"
+        android:insetBottom="10dp"
         android:padding="0dp"
         android:text="@string/edit_my_profile"
         android:textColor="@color/primary"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:backgroundTint="@color/light_grey"
         app:cornerRadius="2dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -120,14 +120,14 @@
         android:layout_marginHorizontal="20dp"
         android:text="@string/your_memories"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_button" />
 
     <ImageView
-        android:layout_width="14sp"
-        android:layout_height="14sp"
+        android:layout_width="16sp"
+        android:layout_height="16sp"
         android:layout_marginEnd="5dp"
         android:contentDescription="@string/only_visible_to_you"
         android:src="@drawable/ic_lock_solid"
@@ -142,7 +142,7 @@
         android:layout_marginHorizontal="20dp"
         android:text="@string/only_visible_to_you"
         android:textColor="@color/medium_grey"
-        android:textSize="12sp"
+        android:textSize="16sp"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="@id/your_memories"
         app:layout_constraintEnd_toEndOf="parent"

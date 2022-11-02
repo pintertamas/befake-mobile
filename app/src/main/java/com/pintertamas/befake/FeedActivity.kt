@@ -10,6 +10,7 @@ import com.pintertamas.befake.constant.Constants
 import com.pintertamas.befake.databinding.ActivityFeedBinding
 import com.pintertamas.befake.fragment.ListPostsFragment
 import com.pintertamas.befake.fragment.NewPostFragment
+import com.pintertamas.befake.fragment.ProfileFragment
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
@@ -45,7 +46,8 @@ class FeedActivity : AppCompatActivity() {
             val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
 
             //transaction.add(R.id.new_post_fragment, NewPostFragment.newInstance(), "NEW_POST")
-            transaction.add(R.id.list_posts_fragment, ListPostsFragment.newInstance(), "LIST_POSTS")
+            //transaction.add(R.id.list_posts_fragment, ListPostsFragment.newInstance(), "LIST_POSTS")
+            transaction.add(R.id.profile_fragment, ProfileFragment.newInstance(), "PROFILE_VIEW")
 
             transaction.commit()
         }
