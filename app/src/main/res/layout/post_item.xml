@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/cl_post_item"
     android:background="@color/primary">
 
     <include
@@ -43,8 +44,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/selfie_photo_card"
-        android:layout_width="150dp"
-        android:layout_height="225dp"
+        android:layout_width="120dp"
+        android:layout_height="180dp"
         android:layout_margin="20dp"
         android:background="@drawable/rounded_edge_border_background"
         android:elevation="0dp"
@@ -93,8 +94,8 @@
 
     <ImageView
         android:id="@+id/comment_icon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_margin="20dp"
         android:contentDescription="@string/comment_icon"
         android:src="@drawable/ic_message_solid"
@@ -103,8 +104,8 @@
 
     <ImageView
         android:id="@+id/reaction_icon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_margin="20dp"
         android:contentDescription="@string/reaction_icon"
         android:src="@drawable/ic_face_grin_solid"

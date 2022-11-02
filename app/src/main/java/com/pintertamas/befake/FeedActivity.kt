@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.arcane.coldstoragecache.cache.Cache
 import com.pintertamas.befake.constant.Constants
 import com.pintertamas.befake.databinding.ActivityFeedBinding
 import com.pintertamas.befake.fragment.ListPostsFragment
@@ -41,7 +40,6 @@ class FeedActivity : AppCompatActivity() {
 
         picasso = Picasso.Builder(this).build()
         picasso.setIndicatorsEnabled(true)
-        Cache.initialize(context = applicationContext)
 
         val token = sharedPreferences.getString("jwt", "")
         val userId = sharedPreferences.getLong("userId", 0)
