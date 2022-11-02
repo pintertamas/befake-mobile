@@ -1,6 +1,7 @@
 package com.pintertamas.befake.fragment
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,21 +15,24 @@ import com.pintertamas.befake.adapter.PostsRecyclerViewAdapter
 import com.pintertamas.befake.databinding.FragmentListPostsBinding
 import com.pintertamas.befake.network.response.PostResponse
 import com.pintertamas.befake.network.response.UserResponse
+import com.pintertamas.befake.network.service.RetrofitService
+import com.squareup.picasso.Picasso
+import okhttp3.ResponseBody
 
-class ListPostsFragment : Fragment(), PostsRecyclerViewAdapter.PostListItemClickListener {
+class ListPostsFragment(private val user: UserResponse) : Fragment(),
+    PostsRecyclerViewAdapter.PostListItemClickListener {
 
     private var _binding: FragmentListPostsBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var network: RetrofitService
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var picasso: Picasso
+    private var posts: List<PostResponse> = emptyList()
+
     private lateinit var postsRecyclerViewAdapter: PostsRecyclerViewAdapter
-    private var itemDetailFragmentContainer: View? = null
 
-    companion object {
-
-        fun newInstance(): ListPostsFragment {
-            return ListPostsFragment()
-        }
-    }
+    private val sharedPrefName = "user_shared_preference"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,19 +40,84 @@ class ListPostsFragment : Fragment(), PostsRecyclerViewAdapter.PostListItemClick
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentListPostsBinding.inflate(inflater, container, false)
+
+        sharedPreferences =
+            requireActivity().getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
+
+        picasso = Picasso.Builder(requireContext()).build()
+        picasso.setIndicatorsEnabled(true)
+
+        val token = sharedPreferences.getString("jwt", "")
+        network = RetrofitService(token!!)
+
+        getTodaysPostByUser(user.id)
+
+        setupRecyclerView()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
     }
 
+    private fun getTodaysPostByUser(userId: Long) {
+        network.getTodaysPostByUser(
+            userId = userId,
+            onSuccess = this::getTodaysPostByUserSuccess,
+            onError = this::genericError
+        )
+    }
+
+    private fun getTodaysPostByUserSuccess(statusCode: Int, responseBody: PostResponse) {
+        Log.d(
+            "GET_TODAYS_POST_BY_USER",
+            "Successfully got today's post from user: $responseBody Status code: $statusCode"
+        )
+        postsRecyclerViewAdapter.setUserCard(user)
+        postsRecyclerViewAdapter.setUserPost(responseBody)
+        getPostsFromFriends()
+    }
+
+    private fun getPostsFromFriends() {
+        network.getPostsFromFriends(
+            onSuccess = this::getPostsFromFriendsSuccess,
+            onError = this::genericError
+        )
+    }
+
+    private fun getPostsFromFriendsSuccess(statusCode: Int, responseBody: List<PostResponse>) {
+        Log.d(
+            "GET_POSTS_FROM_FRIENDS",
+            "Successfully got posts from friends: $responseBody Status code: $statusCode"
+        )
+        postsRecyclerViewAdapter.addAll(responseBody)
+    }
+
+    private fun getImageUrl(filename: String) {
+        network.getImageUrl(
+            filename = filename,
+            onSuccess = this::getImageUrlSuccess,
+            onError = this::genericError
+        )
+    }
+
+    private fun getImageUrlSuccess(statusCode: Int, responseBody: ResponseBody) {
+        Log.d(
+            "GET_IMAGE_URL",
+            "Successfully got image url: $responseBody Status code: $statusCode"
+        )
+    }
+
+    private fun genericError(statusCode: Int, e: Throwable) {
+        Log.e("API_CALL_ERROR", "Error $statusCode during API call")
+        e.printStackTrace()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -56,58 +125,10 @@ class ListPostsFragment : Fragment(), PostsRecyclerViewAdapter.PostListItemClick
     }
 
     private fun setupRecyclerView() {
-        val user = UserResponse(
-            1L,
-            "Tomi",
-            "secretpasswordencrypted",
-            "Tamas Pinter",
-            "pintertamas99@gmail.com",
-            "Hello there",
-            "Budapest",
-            "2022-Oct-23_22:32:24_main.jpg",
-            "2022.11.01.",
-        )
-        val demoData = mutableListOf(
-            PostResponse(
-                1L,
-                1L,
-                "2022-Oct-23_22:32:24_main.jpg",
-                "2022-Oct-31_15:24:48_selfie.png",
-                "description1",
-                "Budapest",
-                "2022.11.01.",
-                "2011.11.01.",
-                false
-            ),
-            PostResponse(
-                2L,
-                2L,
-                "2022-Oct-23_22:32:24_selfie.jpg",
-                "2022-Oct-25_23:29:53_selfie.jpg",
-                "description2",
-                location = "Bukarest",
-                postingTime = "2022.11.01.",
-                beFakeTime = "2011.11.01.",
-                deleted = false
-            ),
-            PostResponse(
-                3L,
-                3L,
-                "2022-Oct-30_20:16:46_main.jpg",
-                "2022-Oct-31_15:24:48_selfie.png",
-                "description3",
-                location = "Vienna",
-                postingTime = "2022.11.01.",
-                beFakeTime = "2011.11.01.",
-                deleted = false
-            )
-        )
         val llm = LinearLayoutManager(this.context)
         llm.orientation = LinearLayoutManager.VERTICAL
         postsRecyclerViewAdapter = PostsRecyclerViewAdapter()
         postsRecyclerViewAdapter.itemClickListener = this
-        postsRecyclerViewAdapter.setUserCard(user)
-        postsRecyclerViewAdapter.addAll(demoData)
         val list = binding.root.findViewById<RecyclerView>(R.id.posts_recycler_view)
         list.layoutManager = llm
         list.adapter = postsRecyclerViewAdapter

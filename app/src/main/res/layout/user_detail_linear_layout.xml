@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/username"
+        android:text="@string/username_lorem"
         android:textColor="@color/light_grey"
         android:textStyle="bold" />
 

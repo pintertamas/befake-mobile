@@ -3,6 +3,8 @@ package com.pintertamas.befake.network.service
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import com.pintertamas.befake.network.request.JwtRequest
 import com.pintertamas.befake.network.request.UserRequest
 import com.pintertamas.befake.network.response.JwtResponse
@@ -17,10 +19,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.awaitResponse
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.sql.Date
-import java.sql.Timestamp
 import kotlin.concurrent.thread
 
 
@@ -76,6 +75,30 @@ class RetrofitService() {
         }
     }
 
+    private fun <T> loadImageIntoViewOnBackgroundThread(
+        call: Call<T>,
+        view: ImageView,
+        onSuccess: (Int, T, ImageView) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        Log.d("RETROFIT_SERVICE", call.request().toString())
+        val handler = Handler(Looper.getMainLooper()!!)
+        thread {
+            var response: Response<T>? = null
+            try {
+                response = call.execute()
+                Log.d("RESPONSE_CODE", response.code().toString())
+                if (response == null || response.code() != 200) throw Exception()
+                val responseBody = response.body()!!
+                handler.post { onSuccess(response.code(), responseBody, view) }
+            } catch (e: Exception) {
+                val code: Int = response?.code() ?: 500
+                e.printStackTrace()
+                handler.post { onError(code, e) }
+            }
+        }
+    }
+
     fun login(
         username: String,
         password: String,
@@ -118,12 +141,58 @@ class RetrofitService() {
         runCallOnBackgroundThread(getUserRequest, onSuccess, onError)
     }
 
+    fun getPostsFromFriends(
+        onSuccess: (Int, List<PostResponse>) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val getPostsFromFriendsResponse = networkService.getPostsFromFriends()
+        runCallOnBackgroundThread(getPostsFromFriendsResponse, onSuccess, onError)
+    }
+
+    fun getTodaysPostByUser(
+        userId: Long,
+        onSuccess: (Int, PostResponse) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val getPostsFromFriendsResponse = networkService.getTodaysPostByUser(userId)
+        runCallOnBackgroundThread(getPostsFromFriendsResponse, onSuccess, onError)
+    }
+
     fun getProfilePictureUrl(
         userId: Long,
         onSuccess: (Int, ResponseBody) -> Unit,
         onError: (Int, Throwable) -> Unit
     ) {
         val getProfilePictureUrlRequest = networkService.getProfilePictureUrl(userId)
+        runCallOnBackgroundThread(getProfilePictureUrlRequest, onSuccess, onError)
+    }
+
+    fun loadProfilePictureUrlIntoView(
+        userId: Long,
+        view: ImageView,
+        onSuccess: (Int, ResponseBody, ImageView) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val loadImageRequest = networkService.getProfilePictureUrl(userId)
+        loadImageIntoViewOnBackgroundThread(loadImageRequest, view, onSuccess, onError)
+    }
+
+    fun loadPostImageUrlIntoView(
+        filename: String,
+        view: ImageView,
+        onSuccess: (Int, ResponseBody, ImageView) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val loadImageRequest = networkService.getImageUrl(filename)
+        loadImageIntoViewOnBackgroundThread(loadImageRequest, view, onSuccess, onError)
+    }
+
+    fun getImageUrl(
+        filename: String,
+        onSuccess: (Int, ResponseBody) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val getProfilePictureUrlRequest = networkService.getImageUrl(filename)
         runCallOnBackgroundThread(getProfilePictureUrlRequest, onSuccess, onError)
     }
 

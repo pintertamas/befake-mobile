@@ -9,19 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.pintertamas.befake.R
 import com.pintertamas.befake.databinding.FragmentNewPostBinding
-import java.util.*
 
-class NewPostFragment : Fragment() {
+class NewPostFragment : Fragment(R.layout.fragment_new_post) {
 
     private var _binding: FragmentNewPostBinding? = null
     private val binding get() = _binding!!
-
-    companion object {
-
-        fun newInstance(): NewPostFragment {
-            return NewPostFragment()
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,9 +24,6 @@ class NewPostFragment : Fragment() {
 
         binding.postBefakeButton.setOnClickListener {
             Log.d("FRAGMENT", "Attached")
-            val fr = fragmentManager?.beginTransaction()
-            fr?.replace(R.id.list_posts_fragment, newInstance(), "LIST_POSTS")
-            fr?.commit()
         }
 
         Log.d("NEW_POST", "Click")

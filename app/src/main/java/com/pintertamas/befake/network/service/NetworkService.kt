@@ -42,11 +42,20 @@ interface NetworkService {
     @GET("/post/{filename}")
     fun getImageUrl(
         @Path("filename") filename: String
-    ): Call<String>
+    ): Call<ResponseBody>
 
     @GET("/post/user-can-post")
     fun canUserPost(
     ): Call<Boolean>
+
+    @GET("/post/friends")
+    fun getPostsFromFriends(
+    ): Call<List<PostResponse>>
+
+    @GET("/post/today/{userId}")
+    fun getTodaysPostByUser(
+        @Path("userId") userId: Long
+    ): Call<PostResponse>
 
     @GET("/time/last-befake-time")
     fun getBeFakeTime(

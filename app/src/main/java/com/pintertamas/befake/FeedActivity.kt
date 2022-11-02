@@ -2,10 +2,12 @@ package com.pintertamas.befake
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.FragmentTransaction
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.arcane.coldstoragecache.cache.Cache
 import com.pintertamas.befake.constant.Constants
 import com.pintertamas.befake.databinding.ActivityFeedBinding
 import com.pintertamas.befake.fragment.ListPostsFragment
@@ -14,14 +16,16 @@ import com.pintertamas.befake.fragment.ProfileFragment
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.awaitAll
 import okhttp3.ResponseBody
+
 
 class FeedActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFeedBinding
     private lateinit var network: RetrofitService
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var picasso: Picasso
+    private lateinit var user: UserResponse
     private var profilePicture: String? = null
     private var canUserPost: Boolean = false
     private var beFakeTime: String? = null
@@ -35,6 +39,10 @@ class FeedActivity : AppCompatActivity() {
 
         sharedPreferences = this.getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
 
+        picasso = Picasso.Builder(this).build()
+        picasso.setIndicatorsEnabled(true)
+        Cache.initialize(context = applicationContext)
+
         val token = sharedPreferences.getString("jwt", "")
         val userId = sharedPreferences.getLong("userId", 0)
         network = RetrofitService(token!!)
@@ -42,24 +50,34 @@ class FeedActivity : AppCompatActivity() {
         getProfilePictureUrl(userId)
         canUserPost()
 
-        if (savedInstanceState == null) {
-            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-
-            //transaction.add(R.id.new_post_fragment, NewPostFragment.newInstance(), "NEW_POST")
-            //transaction.add(R.id.list_posts_fragment, ListPostsFragment.newInstance(), "LIST_POSTS")
-            transaction.add(R.id.profile_fragment, ProfileFragment.newInstance(), "PROFILE_VIEW")
-
-            transaction.commit()
-        }
+        binding.toolbar.visibility = View.VISIBLE
 
         Constants.showSuccessSnackbar(this, layoutInflater, "Successful login!")
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container_view, fragment)
+        fragmentTransaction.addToBackStack(fragment.id.toString())
+        fragmentTransaction.commit()
+    }
+
+    private fun addFullscreenFragment(fragment: Fragment) {
+        binding.toolbar.visibility = View.GONE
+
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.fragment_container_view, fragment)
+        fragmentTransaction.addToBackStack(fragment.id.toString())
+        fragmentTransaction.commit()
     }
 
     private fun getUser(userId: Long) {
         network.getUser(
             userId = userId,
             onSuccess = this::getUserSuccess,
-            onError = this::getUserError,
+            onError = this::genericError,
         )
     }
 
@@ -68,18 +86,18 @@ class FeedActivity : AppCompatActivity() {
             "GET_USER",
             "Successfully queried user: $responseBody Status code: $statusCode"
         )
-    }
-
-    private fun getUserError(statusCode: Int, e: Throwable) {
-        Log.e("GET_USER", "Error $statusCode during user query!")
-        e.printStackTrace()
+        user = responseBody
+        binding.btnProfile.isClickable = true
+        binding.btnProfile.setOnClickListener {
+            addFullscreenFragment(ProfileFragment(user))
+        }
     }
 
     private fun getProfilePictureUrl(userId: Long) {
         network.getProfilePictureUrl(
             userId = userId,
             onSuccess = this::getImageUrlSuccess,
-            onError = this::getImageUrlError
+            onError = this::genericError
         )
     }
 
@@ -90,19 +108,15 @@ class FeedActivity : AppCompatActivity() {
         )
         profilePicture = responseBody.string()
         println(profilePicture)
-        if (profilePicture != null)
-            Picasso.get().load(profilePicture).into(binding.btnProfile)
-    }
-
-    private fun getImageUrlError(statusCode: Int, e: Throwable) {
-        Log.e("GET_IMAGE_URL", "Error $statusCode during image download!")
-        e.printStackTrace()
+        if (profilePicture != null) {
+            picasso.load(profilePicture).into(binding.btnProfile)
+        }
     }
 
     private fun canUserPost() {
         network.canUserPost(
             onSuccess = this::canUserPostSuccess,
-            onError = this::canUserPostError
+            onError = this::genericError
         )
     }
 
@@ -112,10 +126,13 @@ class FeedActivity : AppCompatActivity() {
             "Successful canUserPost call. $responseBody Status code: $statusCode"
         )
         canUserPost = responseBody
+        val fragment: Fragment =
+            if (canUserPost) NewPostFragment() else ListPostsFragment(user)
+        replaceFragment(fragment)
     }
 
-    private fun canUserPostError(statusCode: Int, e: Throwable) {
-        Log.e("CAN_USER_POST", "Error $statusCode during getting last post!")
+    private fun genericError(statusCode: Int, e: Throwable) {
+        Log.e("API_CALL_ERROR", "Error $statusCode during API call!")
         e.printStackTrace()
     }
 

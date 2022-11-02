@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">BeFake</string>
     <string name="logo">BeFake. logo</string>
-    <string name="username">randomusername567</string>
+    <string name="username">username</string>
+    <string name="username_lorem">randomusername567</string>
     <string name="username_tag">\@randomusername567</string>
     <string name="full_name">Sadie Sampleman</string>
     <string name="password">password</string>
@@ -36,4 +37,7 @@
     <string name="your_memories">Your Memories</string>
     <string name="only_visible_to_you">Only visible to you.</string>
     <string name="tba">TBA</string>
+    <string name="location_icon">location icon</string>
+    <string name="location_lorem">Budapest, Hungary</string>
+    <string name="description_lorem">This is a nice description of a nice photo ❤️ Also, this description takes up a little more space than one line</string>
 </resources>

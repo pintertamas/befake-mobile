@@ -6,5 +6,5 @@
     android:layout_marginBottom="0dp"
     android:adjustViewBounds="true"
     android:contentDescription="@string/main_photo"
-    android:scaleType="fitCenter"
+    android:scaleType="centerCrop"
     android:src="@drawable/threetotwo" />
