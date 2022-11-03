@@ -13,13 +13,13 @@ import com.pintertamas.befake.databinding.FragmentEditProfileBinding
 import com.pintertamas.befake.network.request.UserRequest
 import com.pintertamas.befake.network.response.JwtResponse
 import com.pintertamas.befake.network.response.UserResponse
+import com.pintertamas.befake.database.repository.CacheService
 import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
-import okhttp3.ResponseBody
 
 class EditProfileFragment(
     private var user: UserResponse,
-    private val editUserListener: EditedUserListener
+    private val editUserListeners: List<EditedUserListener>
 ) :
     Fragment(R.layout.fragment_edit_profile) {
 
@@ -77,7 +77,8 @@ class EditProfileFragment(
         binding.etUsername.setText(user.username)
         binding.etBiography.setText(user.biography ?: "")
         binding.etLocation.setText(user.location ?: "")
-        getProfilePictureUrl()
+        val cache = CacheService.getInstance()
+        cache?.cacheProfilePicture(user, binding.civProfilePicture)
 
         return binding.root
     }
@@ -96,7 +97,9 @@ class EditProfileFragment(
             "Successfully edited user: $responseBody Status code: $statusCode"
         )
         user = responseBody
-        editUserListener.updateUserDetails(user)
+        editUserListeners.forEach {
+            it.updateUserDetails(user)
+        }
         //login() //TODO: create a refresh token like endpoint in backend -> don't have to remember password and can authenticate still with previous JWT until new one is provisioned
         popFragment()
     }
@@ -131,23 +134,6 @@ class EditProfileFragment(
         editor.apply()
     }
 
-    private fun getProfilePictureUrl() {
-        if (user.profilePicture == null) return
-        network.getProfilePictureUrl(
-            userId = user.id,
-            onSuccess = this::getImageUrlSuccess,
-            onError = this::genericError
-        )
-    }
-
-    private fun getImageUrlSuccess(statusCode: Int, responseBody: ResponseBody) {
-        Log.d(
-            "GET_IMAGE_URL",
-            "Successfully got image url: $responseBody Status code: $statusCode"
-        )
-        picasso.load(responseBody.string()).into(binding.civProfilePicture)
-    }
-
     private fun genericError(statusCode: Int, e: Throwable) {
         Log.e("API_ERROR", "Error $statusCode during API call")
         e.printStackTrace()
@@ -159,7 +145,7 @@ class EditProfileFragment(
 
     companion object {
         @JvmStatic
-        fun newInstance(user: UserResponse, listener: EditedUserListener) =
-            EditProfileFragment(user, listener)
+        fun newInstance(user: UserResponse, listeners: List<EditedUserListener>) =
+            EditProfileFragment(user, listeners)
     }
 }

@@ -1,6 +1,7 @@
 package com.pintertamas.befake.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -9,12 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.pintertamas.befake.LoginActivity
 import com.pintertamas.befake.R
 import com.pintertamas.befake.databinding.FragmentProfileBinding
 import com.pintertamas.befake.network.response.UserResponse
+import com.pintertamas.befake.database.repository.CacheService
 import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
-import okhttp3.ResponseBody
+
 
 class ProfileFragment(
     private var user: UserResponse,
@@ -25,6 +28,7 @@ class ProfileFragment(
     private val binding get() = _binding!!
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var network: RetrofitService
+    private lateinit var cache: CacheService
     private var picasso: Picasso = Picasso.get()
 
     private val sharedPrefName = "user_shared_preference"
@@ -39,6 +43,7 @@ class ProfileFragment(
 
         val token = sharedPreferences.getString("jwt", "")
         network = RetrofitService(token!!)
+        cache = CacheService.getInstance()!!
         println(user.toString())
     }
 
@@ -54,35 +59,34 @@ class ProfileFragment(
         }
 
         binding.editButton.setOnClickListener {
-            val fragment: Fragment = EditProfileFragment.newInstance(user, this)
+            val listPostsFragment: Fragment =
+                requireActivity().supportFragmentManager.findFragmentByTag("LIST_POST_FRAGMENT")!!
+            val fragment: Fragment = EditProfileFragment.newInstance(
+                user,
+                listOf(
+                    this,
+                    listPostsFragment as EditProfileFragment.EditedUserListener
+                )
+            )
             replaceFragment(fragment)
+        }
+
+        binding.logoutButton.setOnClickListener {
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+            editor.remove("userId")
+            editor.remove("username")
+            editor.remove("email")
+            editor.remove("jwt")
+            editor.apply()
+            cache.clear()
+            val intent = Intent(requireActivity(), LoginActivity::class.java)
+            requireActivity().finish()
+            startActivity(intent)
         }
 
         rebuildView()
 
         return binding.root
-    }
-
-    private fun getProfilePictureUrl() {
-        if (user.profilePicture == null) return
-        network.getProfilePictureUrl(
-            userId = user.id,
-            onSuccess = this::getImageUrlSuccess,
-            onError = this::getImageUrlError
-        )
-    }
-
-    private fun getImageUrlSuccess(statusCode: Int, responseBody: ResponseBody) {
-        Log.d(
-            "GET_IMAGE_URL",
-            "Successfully got image url: $responseBody Status code: $statusCode"
-        )
-        picasso.load(responseBody.string()).into(binding.civProfilePicture)
-    }
-
-    private fun getImageUrlError(statusCode: Int, e: Throwable) {
-        Log.e("GET_IMAGE_URL", "Error $statusCode during image download!")
-        e.printStackTrace()
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -120,7 +124,7 @@ class ProfileFragment(
         binding.etUsername.text = usernameTag
         binding.etBiography.text = user.biography ?: ""
         binding.etLocation.text = user.location ?: ""
-        getProfilePictureUrl()
+        cache.cacheProfilePicture(user, binding.civProfilePicture)
     }
 
     companion object {

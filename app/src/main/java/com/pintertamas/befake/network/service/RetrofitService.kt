@@ -22,7 +22,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import kotlin.concurrent.thread
 
-
 class RetrofitService() {
 
     private val networkService: NetworkService
@@ -31,7 +30,6 @@ class RetrofitService() {
     constructor(token: String) : this() {
         this.token = token
     }
-
 
     init {
         val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(Interceptor { chain ->
@@ -77,8 +75,9 @@ class RetrofitService() {
 
     private fun <T> loadImageIntoViewOnBackgroundThread(
         call: Call<T>,
+        filename: String,
         view: ImageView,
-        onSuccess: (Int, T, ImageView) -> Unit,
+        onSuccess: (Int, T, String, ImageView) -> Unit,
         onError: (Int, Throwable) -> Unit
     ) {
         Log.d("RETROFIT_SERVICE", call.request().toString())
@@ -90,7 +89,7 @@ class RetrofitService() {
                 Log.d("RESPONSE_CODE", response.code().toString())
                 if (response == null || response.code() != 200) throw Exception()
                 val responseBody = response.body()!!
-                handler.post { onSuccess(response.code(), responseBody, view) }
+                handler.post { onSuccess(response.code(), responseBody, filename, view) }
             } catch (e: Exception) {
                 val code: Int = response?.code() ?: 500
                 e.printStackTrace()
@@ -159,41 +158,66 @@ class RetrofitService() {
     }
 
     fun getProfilePictureUrl(
-        userId: Long,
-        onSuccess: (Int, ResponseBody) -> Unit,
+        user: UserResponse,
+        view: ImageView,
+        onSuccess: (Int, ResponseBody, String, ImageView) -> Unit,
         onError: (Int, Throwable) -> Unit
     ) {
-        val getProfilePictureUrlRequest = networkService.getProfilePictureUrl(userId)
-        runCallOnBackgroundThread(getProfilePictureUrlRequest, onSuccess, onError)
+        println("Creating getProfilePictureUrl request with userid: ${user.id}")
+        val getProfilePictureUrlRequest = networkService.getProfilePictureUrl(user.id)
+        loadImageIntoViewOnBackgroundThread(
+            getProfilePictureUrlRequest,
+            user.profilePicture?:"",
+            view,
+            onSuccess,
+            onError
+        )
     }
 
     fun loadProfilePictureUrlIntoView(
-        userId: Long,
+        id: Long,
         view: ImageView,
-        onSuccess: (Int, ResponseBody, ImageView) -> Unit,
+        onSuccess: (Int, ResponseBody, String, ImageView) -> Unit,
         onError: (Int, Throwable) -> Unit
     ) {
-        val loadImageRequest = networkService.getProfilePictureUrl(userId)
-        loadImageIntoViewOnBackgroundThread(loadImageRequest, view, onSuccess, onError)
+        val getProfilePictureUrlRequest = networkService.getProfilePictureUrl(id)
+        loadImageIntoViewOnBackgroundThread(
+            getProfilePictureUrlRequest,
+            id.toString(),
+            view,
+            onSuccess,
+            onError
+        )
+    }
+
+    fun loadProfilePictureUrlIntoView(
+        user: UserResponse,
+        view: ImageView,
+        onSuccess: (Int, ResponseBody, String, ImageView) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val loadImageRequest = networkService.getProfilePictureUrl(user.id)
+        loadImageIntoViewOnBackgroundThread(loadImageRequest, user.profilePicture?:"", view, onSuccess, onError)
     }
 
     fun loadPostImageUrlIntoView(
         filename: String,
         view: ImageView,
-        onSuccess: (Int, ResponseBody, ImageView) -> Unit,
+        onSuccess: (Int, ResponseBody, String, ImageView) -> Unit,
         onError: (Int, Throwable) -> Unit
     ) {
         val loadImageRequest = networkService.getImageUrl(filename)
-        loadImageIntoViewOnBackgroundThread(loadImageRequest, view, onSuccess, onError)
+        loadImageIntoViewOnBackgroundThread(loadImageRequest, filename, view, onSuccess, onError)
     }
 
     fun getImageUrl(
         filename: String,
-        onSuccess: (Int, ResponseBody) -> Unit,
+        view: ImageView,
+        onSuccess: (Int, ResponseBody, String, ImageView) -> Unit,
         onError: (Int, Throwable) -> Unit
     ) {
         val getProfilePictureUrlRequest = networkService.getImageUrl(filename)
-        runCallOnBackgroundThread(getProfilePictureUrlRequest, onSuccess, onError)
+        loadImageIntoViewOnBackgroundThread(getProfilePictureUrlRequest, filename, view, onSuccess, onError)
     }
 
     fun canUserPost(

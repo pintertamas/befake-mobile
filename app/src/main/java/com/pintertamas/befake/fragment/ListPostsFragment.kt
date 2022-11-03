@@ -20,8 +20,8 @@ import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
 import okhttp3.ResponseBody
 
-class ListPostsFragment(private val user: UserResponse) : Fragment(),
-    PostsRecyclerViewAdapter.PostListItemClickListener {
+class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.fragment_list_posts),
+    EditProfileFragment.EditedUserListener {
 
     private var _binding: FragmentListPostsBinding? = null
     private val binding get() = _binding!!
@@ -29,7 +29,6 @@ class ListPostsFragment(private val user: UserResponse) : Fragment(),
     private lateinit var network: RetrofitService
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var picasso: Picasso
-    private var posts: List<PostResponse> = emptyList()
 
     private lateinit var postsRecyclerViewAdapter: PostsRecyclerViewAdapter
 
@@ -110,21 +109,6 @@ class ListPostsFragment(private val user: UserResponse) : Fragment(),
         postsRecyclerViewAdapter.addAll(responseBody)
     }
 
-    private fun getImageUrl(filename: String) {
-        network.getImageUrl(
-            filename = filename,
-            onSuccess = this::getImageUrlSuccess,
-            onError = this::genericError
-        )
-    }
-
-    private fun getImageUrlSuccess(statusCode: Int, responseBody: ResponseBody) {
-        Log.d(
-            "GET_IMAGE_URL",
-            "Successfully got image url: $responseBody Status code: $statusCode"
-        )
-    }
-
     private fun genericError(statusCode: Int, e: Throwable) {
         Log.e("API_CALL_ERROR", "Error $statusCode during API call")
         e.printStackTrace()
@@ -135,18 +119,19 @@ class ListPostsFragment(private val user: UserResponse) : Fragment(),
         _binding = null
     }
 
+
+    override fun updateUserDetails(user: UserResponse) {
+        this.user = user
+        postsRecyclerViewAdapter.updateUser(user)
+    }
+
     private fun setupRecyclerView() {
         val llm = LinearLayoutManager(this.context)
         llm.orientation = LinearLayoutManager.VERTICAL
         postsRecyclerViewAdapter = PostsRecyclerViewAdapter()
-        postsRecyclerViewAdapter.itemClickListener = this
         val list = binding.root.findViewById<RecyclerView>(R.id.posts_recycler_view)
         list.layoutManager = llm
         list.adapter = postsRecyclerViewAdapter
-    }
-
-    override fun onItemClick(post: PostResponse) {
-        Log.d("POST_CLICK", "Clicked " + post.id)
     }
 
     companion object {

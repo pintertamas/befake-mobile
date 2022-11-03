@@ -7,25 +7,27 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.room.Room
 import com.pintertamas.befake.constant.Constants
+import com.pintertamas.befake.database.ImageCacheDatabase
 import com.pintertamas.befake.databinding.ActivityFeedBinding
 import com.pintertamas.befake.fragment.ListPostsFragment
 import com.pintertamas.befake.fragment.NewPostFragment
 import com.pintertamas.befake.fragment.ProfileFragment
 import com.pintertamas.befake.network.response.UserResponse
+import com.pintertamas.befake.database.repository.CacheService
 import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
-import okhttp3.ResponseBody
 
 
 class FeedActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFeedBinding
     private lateinit var network: RetrofitService
+    private lateinit var cache: CacheService
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var picasso: Picasso
     private lateinit var user: UserResponse
-    private var profilePicture: String? = null
     private var canUserPost: Boolean = false
     private var beFakeTime: String? = null
 
@@ -44,26 +46,36 @@ class FeedActivity : AppCompatActivity() {
         val token = sharedPreferences.getString("jwt", "")
         val userId = sharedPreferences.getLong("userId", 0)
         network = RetrofitService(token!!)
+        cache = CacheService.getInstance()!!
+        cache.setNetworkService(network)
+        cache.initDatabase(
+            Room.databaseBuilder(
+                applicationContext,
+                ImageCacheDatabase::class.java,
+                "image-cache"
+            )
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build()
+        )
         getUser(userId)
-        getProfilePictureUrl(userId)
-        canUserPost()
 
         binding.toolbar.visibility = View.VISIBLE
 
         Constants.showSuccessSnackbar(this, layoutInflater, "Successful login!")
     }
 
-    private fun addFragment(fragment: Fragment) {
+    private fun addFragment(fragment: Fragment, tag: String) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.fragment_container_view, fragment)
+        fragmentTransaction.add(R.id.fragment_container_view, fragment, tag)
         fragmentTransaction.addToBackStack(fragment.id.toString())
         fragmentTransaction.commit()
     }
 
-    private fun addFullscreenFragment(fragment: Fragment) {
+    private fun addFullscreenFragment(fragment: Fragment, tag: String) {
         binding.toolbar.visibility = View.GONE
-        addFragment(fragment)
+        addFragment(fragment, tag)
     }
 
     private fun getUser(userId: Long) {
@@ -80,30 +92,12 @@ class FeedActivity : AppCompatActivity() {
             "Successfully queried user: $responseBody Status code: $statusCode"
         )
         user = responseBody
+        cache.cacheProfilePicture(user, binding.btnProfile)
         binding.btnProfile.isClickable = true
         binding.btnProfile.setOnClickListener {
-            addFullscreenFragment(ProfileFragment.newInstance(user))
+            addFullscreenFragment(ProfileFragment.newInstance(user), "PROFILE_FRAGMENT")
         }
-    }
-
-    private fun getProfilePictureUrl(userId: Long) {
-        network.getProfilePictureUrl(
-            userId = userId,
-            onSuccess = this::getImageUrlSuccess,
-            onError = this::genericError
-        )
-    }
-
-    private fun getImageUrlSuccess(statusCode: Int, responseBody: ResponseBody) {
-        Log.d(
-            "GET_IMAGE_URL",
-            "Successfully got image url: $responseBody Status code: $statusCode"
-        )
-        profilePicture = responseBody.string()
-        println(profilePicture)
-        if (profilePicture != null) {
-            picasso.load(profilePicture).into(binding.btnProfile)
-        }
+        canUserPost()
     }
 
     private fun canUserPost() {
@@ -121,10 +115,12 @@ class FeedActivity : AppCompatActivity() {
         canUserPost = responseBody
         val fragment: Fragment =
             if (canUserPost) NewPostFragment.newInstance() else ListPostsFragment.newInstance(user)
-        addFragment(fragment)
+        val tag: String =
+            if (fragment is NewPostFragment) "NEW_POST_FRAGMENT" else "LIST_POST_FRAGMENT"
+        addFragment(fragment, tag)
     }
 
-    fun genericError(statusCode: Int, e: Throwable) {
+    private fun genericError(statusCode: Int, e: Throwable) {
         Log.e("API_CALL_ERROR", "Error $statusCode during API call!")
         e.printStackTrace()
     }
