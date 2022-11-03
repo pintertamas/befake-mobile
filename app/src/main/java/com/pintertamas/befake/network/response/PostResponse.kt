@@ -10,6 +10,9 @@ data class PostResponse(
     @Json(name = "userId")
     val userId: Long,
 
+    @Json(name = "username")
+    val username: String,
+
     @Json(name = "mainPhoto")
     val mainPhoto: String,
 

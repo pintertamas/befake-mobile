@@ -103,7 +103,10 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
         fun bind(position: Int) {
             if (userPost == null) return
-            username.text = postList[position - 1].userId.toString()
+            if (postList[position - 1].deleted) {
+                itemView.visibility = View.GONE
+            }
+            username.text = postList[position - 1].username
             val description: String = postList[position - 1].description ?: ""
             if (description == "") descriptionView.visibility = View.GONE
             else descriptionView.text = description

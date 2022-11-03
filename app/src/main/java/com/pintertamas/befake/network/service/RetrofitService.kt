@@ -211,4 +211,13 @@ class RetrofitService() {
         val getBeFakeTimeRequest = networkService.getBeFakeTime()
         runCallOnBackgroundThread(getBeFakeTimeRequest, onSuccess, onError)
     }
+
+    fun editUser(
+        userRequest: UserRequest,
+        onSuccess: (Int, UserResponse) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val editUserRequest = networkService.editUser(userRequest)
+        runCallOnBackgroundThread(editUserRequest, onSuccess, onError)
+    }
 }

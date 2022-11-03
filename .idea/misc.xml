@@ -21,10 +21,21 @@
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/custom_error_snackbar.xml" value="0.33" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/custom_error_toast.xml" value="0.5" />
         <entry key="..\:/Documents/BME/#Szakdolgozat/befake-mobile/app/src/main/res/layout/custom_success_snackbar.xml" value="0.5" />
+        <entry key="app/src/main/res/drawable-xxxhdpi/snackbar_background.xml" value="0.2315" />
+        <entry key="app/src/main/res/drawable/edge_button_background.xml" value="0.2315" />
+        <entry key="app/src/main/res/drawable/ic_camera_solid.xml" value="0.1925" />
+        <entry key="app/src/main/res/drawable/ic_check_solid.xml" value="0.2165" />
+        <entry key="app/src/main/res/drawable/ic_ellipsis_vertical_solid.xml" value="0.2315" />
         <entry key="app/src/main/res/drawable/ic_location_dot_solid.xml" value="0.2165" />
+        <entry key="app/src/main/res/drawable/login_input.xml" value="0.2315" />
+        <entry key="app/src/main/res/drawable/profile_picture_shape.xml" value="0.2315" />
+        <entry key="app/src/main/res/drawable/underline.xml" value="0.2315" />
         <entry key="app/src/main/res/layout/activity_feed.xml" value="0.3761749267578125" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/edit_text_profile.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/fragment_edit_profile.xml" value="0.17682952880859373" />
+        <entry key="app/src/main/res/layout/fragment_friend.xml" value="0.209375" />
         <entry key="app/src/main/res/layout/fragment_list_posts.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/fragment_new_post.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.2776268115942029" />

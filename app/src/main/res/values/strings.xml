@@ -4,13 +4,15 @@
     <string name="username">username</string>
     <string name="username_lorem">randomusername567</string>
     <string name="username_tag">\@randomusername567</string>
-    <string name="full_name">Sadie Sampleman</string>
+    <string name="full_name">full name</string>
+    <string name="full_name_lorem">Sadie Sampleman</string>
     <string name="password">password</string>
     <string name="login">login</string>
     <string name="befake_logo">BeFake logo</string>
     <string name="register">REGISTER</string>
     <string name="email">email</string>
-    <string name="biography">This is my biography hello everyone!</string>
+    <string name="biography">biography</string>
+    <string name="biography_lorem">This is my biography hello everyone!</string>
     <string name="location">location</string>
     <string name="add_user_button">Add user button</string>
     <string name="profile_picture_in_a_circle">profile picture in a circle</string>
@@ -40,4 +42,7 @@
     <string name="location_icon">location icon</string>
     <string name="location_lorem">Budapest, Hungary</string>
     <string name="description_lorem">This is a nice description of a nice photo ❤️ Also, this description takes up a little more space than one line</string>
+    <string name="check_button">check button</string>
+    <string name="placeholder">placeholder</string>
+    <string name="camera_icon">camera icon</string>
 </resources>

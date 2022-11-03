@@ -17,9 +17,9 @@ import com.squareup.picasso.Picasso
 import okhttp3.ResponseBody
 
 class ProfileFragment(
-    private val user: UserResponse,
+    private var user: UserResponse,
 ) :
-    Fragment(R.layout.fragment_profile) {
+    Fragment(R.layout.fragment_profile), EditProfileFragment.EditedUserListener {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
@@ -53,13 +53,12 @@ class ProfileFragment(
             parentFragmentManager.popBackStack()
         }
 
-        if (user.profilePicture != null)
-            Picasso.get().load(user.profilePicture).into(binding.civProfilePicture)
-        binding.etFullName.text = user.fullName ?: ""
-        binding.etUsername.text = user.username
-        binding.etBiography.text = user.biography ?: ""
-        binding.etLocation.text = user.location ?: ""
-        getProfilePictureUrl()
+        binding.editButton.setOnClickListener {
+            val fragment: Fragment = EditProfileFragment.newInstance(user, this)
+            replaceFragment(fragment)
+        }
+
+        rebuildView()
 
         return binding.root
     }
@@ -84,5 +83,48 @@ class ProfileFragment(
     private fun getImageUrlError(statusCode: Int, e: Throwable) {
         Log.e("GET_IMAGE_URL", "Error $statusCode during image download!")
         e.printStackTrace()
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.fragment_container_view, fragment)
+        fragmentTransaction.addToBackStack(fragment.id.toString())
+        fragmentTransaction.commit()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        activity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.VISIBLE
+    }
+
+    override fun updateUserDetails(user: UserResponse) {
+        this.user = user
+        refreshView()
+    }
+
+    private fun refreshView() {
+        requireActivity()
+            .supportFragmentManager
+            .beginTransaction()
+            .detach(this)
+            .attach(this)
+            .commit()
+        rebuildView()
+        println("Refreshed")
+    }
+
+    private fun rebuildView() {
+        binding.etFullName.text = user.fullName ?: ""
+        val usernameTag = "@${user.username}"
+        binding.etUsername.text = usernameTag
+        binding.etBiography.text = user.biography ?: ""
+        binding.etLocation.text = user.location ?: ""
+        getProfilePictureUrl()
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(user: UserResponse) = ProfileFragment(user)
     }
 }

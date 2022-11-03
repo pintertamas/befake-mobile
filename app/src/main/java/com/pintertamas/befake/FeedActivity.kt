@@ -53,22 +53,17 @@ class FeedActivity : AppCompatActivity() {
         Constants.showSuccessSnackbar(this, layoutInflater, "Successful login!")
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+    private fun addFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container_view, fragment)
+        fragmentTransaction.add(R.id.fragment_container_view, fragment)
         fragmentTransaction.addToBackStack(fragment.id.toString())
         fragmentTransaction.commit()
     }
 
     private fun addFullscreenFragment(fragment: Fragment) {
         binding.toolbar.visibility = View.GONE
-
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.fragment_container_view, fragment)
-        fragmentTransaction.addToBackStack(fragment.id.toString())
-        fragmentTransaction.commit()
+        addFragment(fragment)
     }
 
     private fun getUser(userId: Long) {
@@ -87,7 +82,7 @@ class FeedActivity : AppCompatActivity() {
         user = responseBody
         binding.btnProfile.isClickable = true
         binding.btnProfile.setOnClickListener {
-            addFullscreenFragment(ProfileFragment(user))
+            addFullscreenFragment(ProfileFragment.newInstance(user))
         }
     }
 
@@ -125,11 +120,11 @@ class FeedActivity : AppCompatActivity() {
         )
         canUserPost = responseBody
         val fragment: Fragment =
-            if (canUserPost) NewPostFragment() else ListPostsFragment(user)
-        replaceFragment(fragment)
+            if (canUserPost) NewPostFragment.newInstance() else ListPostsFragment.newInstance(user)
+        addFragment(fragment)
     }
 
-    private fun genericError(statusCode: Int, e: Throwable) {
+    fun genericError(statusCode: Int, e: Throwable) {
         Log.e("API_CALL_ERROR", "Error $statusCode during API call!")
         e.printStackTrace()
     }

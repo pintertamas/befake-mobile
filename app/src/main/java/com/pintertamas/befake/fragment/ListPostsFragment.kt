@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -64,6 +65,16 @@ class ListPostsFragment(private val user: UserResponse) : Fragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    requireActivity().finish()
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            callback
+        )
     }
 
     private fun getTodaysPostByUser(userId: Long) {
@@ -136,5 +147,10 @@ class ListPostsFragment(private val user: UserResponse) : Fragment(),
 
     override fun onItemClick(post: PostResponse) {
         Log.d("POST_CLICK", "Clicked " + post.id)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(user: UserResponse) = ListPostsFragment(user)
     }
 }

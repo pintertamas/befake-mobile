@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import com.pintertamas.befake.R
 import com.pintertamas.befake.databinding.FragmentNewPostBinding
 
@@ -33,11 +35,25 @@ class NewPostFragment : Fragment(R.layout.fragment_new_post) {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    requireActivity().finish()
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            callback
+        )
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = NewPostFragment()
     }
 }

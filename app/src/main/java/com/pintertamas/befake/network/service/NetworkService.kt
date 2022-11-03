@@ -60,4 +60,9 @@ interface NetworkService {
     @GET("/time/last-befake-time")
     fun getBeFakeTime(
     ): Call<String>
+
+    @PATCH("/user")
+    fun editUser(
+        @Body userRequest: UserRequest
+    ): Call<UserResponse>
 }
