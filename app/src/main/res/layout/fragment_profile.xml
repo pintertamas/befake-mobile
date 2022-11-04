@@ -197,6 +197,24 @@
         app:layout_constraintTop_toTopOf="@id/memories_container_card" />
 
     <androidx.constraintlayout.utils.widget.MotionButton
+        android:id="@+id/clear_cache_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/light_blue"
+        android:elevation="0dp"
+        android:gravity="center"
+        android:text="@string/clear_cache"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:cardElevation="10dp"
+        app:layout_constraintBottom_toTopOf="@id/logout_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </androidx.constraintlayout.utils.widget.MotionButton>
+
+    <androidx.constraintlayout.utils.widget.MotionButton
         android:id="@+id/logout_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

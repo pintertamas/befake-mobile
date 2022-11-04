@@ -7,8 +7,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.FragmentManager
 import com.pintertamas.befake.R
 import com.pintertamas.befake.databinding.FragmentNewPostBinding
 
@@ -38,7 +38,9 @@ class NewPostFragment : Fragment(R.layout.fragment_new_post) {
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    requireActivity().finish()
+                    if (requireActivity().supportFragmentManager.fragments.size == 1)
+                        requireActivity().finish()
+                    else requireActivity().supportFragmentManager.popBackStack()
                 }
             }
         requireActivity().onBackPressedDispatcher.addCallback(

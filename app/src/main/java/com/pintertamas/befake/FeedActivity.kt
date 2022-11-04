@@ -16,11 +16,13 @@ import com.pintertamas.befake.fragment.NewPostFragment
 import com.pintertamas.befake.fragment.ProfileFragment
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.database.repository.CacheService
+import com.pintertamas.befake.fragment.EditProfileFragment
 import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
+import java.sql.Timestamp
 
 
-class FeedActivity : AppCompatActivity() {
+class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener {
 
     private lateinit var binding: ActivityFeedBinding
     private lateinit var network: RetrofitService
@@ -29,7 +31,7 @@ class FeedActivity : AppCompatActivity() {
     private lateinit var picasso: Picasso
     private lateinit var user: UserResponse
     private var canUserPost: Boolean = false
-    private var beFakeTime: String? = null
+    private var beFakeTime: Timestamp? = null
 
     private val sharedPrefName = "user_shared_preference"
 
@@ -92,12 +94,16 @@ class FeedActivity : AppCompatActivity() {
             "Successfully queried user: $responseBody Status code: $statusCode"
         )
         user = responseBody
+        loadProfileData(user)
+        canUserPost()
+    }
+
+    private fun loadProfileData(user: UserResponse) {
         cache.cacheProfilePicture(user, binding.btnProfile)
         binding.btnProfile.isClickable = true
         binding.btnProfile.setOnClickListener {
             addFullscreenFragment(ProfileFragment.newInstance(user), "PROFILE_FRAGMENT")
         }
-        canUserPost()
     }
 
     private fun canUserPost() {
@@ -125,24 +131,7 @@ class FeedActivity : AppCompatActivity() {
         e.printStackTrace()
     }
 
-    /*private fun getBeFakeTime() {
-        network.getBeFakeTime(
-            onSuccess = this::getBeFakeTimeSuccess,
-            onError = this::getBeFakeTimeError
-        )
+    override fun updateUserDetails(user: UserResponse) {
+        loadProfileData(user)
     }
-
-    private fun getBeFakeTimeSuccess(statusCode: Int, responseBody: String) {
-        Log.d(
-            "GET_BEFAKE_TIME",
-            "Successfully got befake time: $responseBody Status code: $statusCode"
-        )
-        beFakeTime = responseBody
-        binding.befakeTime.text = beFakeTime.toString()
-    }
-
-    private fun getBeFakeTimeError(statusCode: Int, e: Throwable) {
-        Log.e("GET_BEFAKE_TIME", "Error $statusCode during getting befake time!")
-        e.printStackTrace()
-    }*/
 }

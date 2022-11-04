@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatDelegate
 import com.pintertamas.befake.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {
@@ -15,6 +16,8 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,

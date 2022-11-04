@@ -9,7 +9,7 @@ import com.pintertamas.befake.database.model.ImageCache
 
 @Database(
     entities = [ImageCache::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(

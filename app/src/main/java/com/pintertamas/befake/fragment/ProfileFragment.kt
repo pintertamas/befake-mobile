@@ -71,6 +71,10 @@ class ProfileFragment(
             replaceFragment(fragment)
         }
 
+        binding.clearCacheButton.setOnClickListener {
+            cache.clear()
+        }
+
         binding.logoutButton.setOnClickListener {
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
             editor.remove("userId")
@@ -103,6 +107,7 @@ class ProfileFragment(
     }
 
     override fun updateUserDetails(user: UserResponse) {
+        Log.d("UPDATING_USER_DETAILSpf", user.toString())
         this.user = user
         refreshView()
     }

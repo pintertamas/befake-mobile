@@ -1,5 +1,6 @@
 package com.pintertamas.befake.constant
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -7,6 +8,8 @@ import com.kishandonga.csbx.CustomSnackbar
 import com.pintertamas.befake.R
 import com.pintertamas.befake.databinding.CustomErrorSnackbarBinding
 import com.pintertamas.befake.databinding.CustomSuccessSnackbarBinding
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
 
 class Constants {
     companion object {
@@ -38,6 +41,14 @@ class Constants {
                 message(errorMessage)
                 duration(Toast.LENGTH_SHORT)
             }
+        }
+
+        @SuppressLint("SimpleDateFormat")
+        fun convertStringToTimestamp(beFakeTimeString: String): Timestamp {
+            val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+            val sdf = SimpleDateFormat(pattern)
+            val parsedDate = sdf.parse(beFakeTimeString)
+            return Timestamp(parsedDate?.time ?: 0)
         }
     }
 }

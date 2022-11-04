@@ -2,9 +2,7 @@ package com.pintertamas.befake.network.service
 
 import com.pintertamas.befake.network.request.JwtRequest
 import com.pintertamas.befake.network.request.UserRequest
-import com.pintertamas.befake.network.response.JwtResponse
-import com.pintertamas.befake.network.response.PostResponse
-import com.pintertamas.befake.network.response.UserResponse
+import com.pintertamas.befake.network.response.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -44,6 +42,11 @@ interface NetworkService {
         @Path("filename") filename: String
     ): Call<ResponseBody>
 
+    @GET("/reaction/{filename}")
+    fun getReactionImageUrl(
+        @Path("filename") filename: String
+    ): Call<ResponseBody>
+
     @GET("/post/user-can-post")
     fun canUserPost(
     ): Call<Boolean>
@@ -56,6 +59,16 @@ interface NetworkService {
     fun getTodaysPostByUser(
         @Path("userId") userId: Long
     ): Call<PostResponse>
+
+    @GET("/comment/post/{postId}")
+    fun getCommentsOnPost(
+        @Path("postId") postId: Long
+    ): Call<List<CommentResponse>>
+
+    @GET("/reaction/post/{postId}")
+    fun getReactionsOnPost(
+        @Path("postId") postId: Long
+    ): Call<List<ReactionResponse>>
 
     @GET("/time/last-befake-time")
     fun getBeFakeTime(
