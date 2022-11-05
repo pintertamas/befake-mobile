@@ -6,6 +6,7 @@ import androidx.room.Entity
 data class ReactionResponse(
     var id: Long,
     var userId: Long,
+    var username: String,
     var postId: Long,
     val imageName: String,
     val reactionTime: String

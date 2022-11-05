@@ -15,7 +15,6 @@ import com.pintertamas.befake.network.response.JwtResponse
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.database.repository.CacheService
 import com.pintertamas.befake.network.service.RetrofitService
-import com.squareup.picasso.Picasso
 
 class EditProfileFragment(
     private var user: UserResponse,
@@ -28,7 +27,6 @@ class EditProfileFragment(
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var network: RetrofitService
-    private var picasso: Picasso = Picasso.get()
 
     private val sharedPrefName = "user_shared_preference"
 
@@ -36,9 +34,6 @@ class EditProfileFragment(
         super.onCreate(savedInstanceState)
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
-
-        picasso = Picasso.Builder(requireContext()).build()
-        picasso.setIndicatorsEnabled(true)
 
         val token = sharedPreferences.getString("jwt", "")
         network = RetrofitService(token!!)

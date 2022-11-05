@@ -11,12 +11,9 @@ import androidx.room.Room
 import com.pintertamas.befake.constant.Constants
 import com.pintertamas.befake.database.ImageCacheDatabase
 import com.pintertamas.befake.databinding.ActivityFeedBinding
-import com.pintertamas.befake.fragment.ListPostsFragment
-import com.pintertamas.befake.fragment.NewPostFragment
-import com.pintertamas.befake.fragment.ProfileFragment
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.database.repository.CacheService
-import com.pintertamas.befake.fragment.EditProfileFragment
+import com.pintertamas.befake.fragment.*
 import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
 import java.sql.Timestamp
@@ -28,7 +25,6 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
     private lateinit var network: RetrofitService
     private lateinit var cache: CacheService
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var picasso: Picasso
     private lateinit var user: UserResponse
     private var canUserPost: Boolean = false
     private var beFakeTime: Timestamp? = null
@@ -41,9 +37,6 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
         setContentView(binding.root)
 
         sharedPreferences = this.getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
-
-        picasso = Picasso.Builder(this).build()
-        picasso.setIndicatorsEnabled(true)
 
         val token = sharedPreferences.getString("jwt", "")
         val userId = sharedPreferences.getLong("userId", 0)
@@ -61,13 +54,20 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
                 .build()
         )
         getUser(userId)
+        loadUserList()
 
         binding.toolbar.visibility = View.VISIBLE
 
         Constants.showSuccessSnackbar(this, layoutInflater, "Successful login!")
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.toolbar.visibility = View.VISIBLE
+    }
+
     private fun addFragment(fragment: Fragment, tag: String) {
+        println("Adding fragment ${fragment.id} with tag $tag")
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.add(R.id.fragment_container_view, fragment, tag)
@@ -98,6 +98,26 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
         canUserPost()
     }
 
+    private fun loadUserList() {
+        network.loadUserList(
+            onSuccess = this::onLoadUsersSuccess,
+            onError = this::genericError
+        )
+    }
+
+    private fun onLoadUsersSuccess(statusCode: Int, responseBody: List<UserResponse>) {
+        Log.d(
+            "USER_LIST",
+            "Successful loadUserList call. $responseBody Status code: $statusCode"
+        )
+        binding.btnAddFriend.isClickable = true
+        Log.d("USER_LIST", responseBody.toString())
+        val fragment: Fragment = FriendFragment.newInstance(responseBody)
+        binding.btnAddFriend.setOnClickListener {
+            addFullscreenFragment(fragment, "ADD_FRIENDS")
+        }
+    }
+
     private fun loadProfileData(user: UserResponse) {
         cache.cacheProfilePicture(user, binding.btnProfile)
         binding.btnProfile.isClickable = true
@@ -119,11 +139,9 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
             "Successful canUserPost call. $responseBody Status code: $statusCode"
         )
         canUserPost = responseBody
-        val fragment: Fragment =
-            if (canUserPost) NewPostFragment.newInstance() else ListPostsFragment.newInstance(user)
-        val tag: String =
-            if (fragment is NewPostFragment) "NEW_POST_FRAGMENT" else "LIST_POST_FRAGMENT"
-        addFragment(fragment, tag)
+
+        addFragment(ListPostsFragment.newInstance(user), "LIST_POST_FRAGMENT")
+        if (canUserPost) addFragment(NewPostFragment.newInstance(), "NEW_POST_FRAGMENT")
     }
 
     private fun genericError(statusCode: Int, e: Throwable) {

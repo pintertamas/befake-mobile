@@ -22,9 +22,7 @@ import com.pintertamas.befake.network.response.ReactionResponse
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
-import java.sql.Date
 import java.sql.Timestamp
-import java.text.SimpleDateFormat
 
 class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.fragment_list_posts),
     EditProfileFragment.EditedUserListener {
@@ -34,7 +32,6 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
 
     private lateinit var network: RetrofitService
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var picasso: Picasso
     private lateinit var beFakeTime: Timestamp
 
     private lateinit var postsRecyclerViewAdapter: PostsRecyclerViewAdapter
@@ -50,9 +47,6 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
 
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
-
-        picasso = Picasso.Builder(requireContext()).build()
-        picasso.setIndicatorsEnabled(true)
 
         val token = sharedPreferences.getString("jwt", "")
         network = RetrofitService(token!!)

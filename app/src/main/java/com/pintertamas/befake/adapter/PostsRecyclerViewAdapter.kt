@@ -17,10 +17,8 @@ import com.pintertamas.befake.network.response.ReactionResponse
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
 import com.squareup.picasso.Picasso
-import org.ocpsoft.prettytime.PrettyTime
 import java.sql.Timestamp
 import java.util.*
-import kotlin.math.min
 
 
 class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -41,9 +39,6 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
         sharedPreferences =
             parent.context.getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
-
-        picasso = Picasso.Builder(parent.context).build()
-        //picasso.setIndicatorsEnabled(true)
 
         val token = sharedPreferences.getString("jwt", "")
         network = RetrofitService(token!!)

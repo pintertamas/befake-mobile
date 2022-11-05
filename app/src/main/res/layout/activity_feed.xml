@@ -33,6 +33,7 @@
 
             <ImageView
                 android:id="@+id/btn_add_friend"
+                android:clickable="false"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="bottom"

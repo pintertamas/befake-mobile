@@ -33,12 +33,26 @@ class NewPostFragment : Fragment(R.layout.fragment_new_post) {
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<View>(R.id.toolbar).visibility = View.VISIBLE
+    }
+
+    /*override fun onAttach(context: Context) {
         super.onAttach(context)
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (requireActivity().supportFragmentManager.fragments.size == 1)
+                    val fragment: Fragment? =
+                        requireActivity().supportFragmentManager.findFragmentByTag("NEW_POST_FRAGMENT")
+                    if (requireActivity()
+                            .supportFragmentManager
+                            .getBackStackEntryAt(
+                                requireActivity()
+                                    .supportFragmentManager.backStackEntryCount - 1
+                            )
+                            .name!!.toString() == fragment!!.id.toString()
+                    )
                         requireActivity().finish()
                     else requireActivity().supportFragmentManager.popBackStack()
                 }
@@ -47,12 +61,7 @@ class NewPostFragment : Fragment(R.layout.fragment_new_post) {
             this,
             callback
         )
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    }*/
 
     companion object {
         @JvmStatic

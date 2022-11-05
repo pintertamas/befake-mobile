@@ -24,6 +24,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.URL
 import kotlin.concurrent.thread
+import kotlin.reflect.KFunction2
 
 class RetrofitService() {
 
@@ -270,6 +271,31 @@ class RetrofitService() {
         runCallOnBackgroundThread(getBeFakeTimeRequest, onSuccess, onError)
     }
 
+    fun loadUserList(
+        onSuccess: (Int, List<UserResponse>) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val userListRequest = networkService.loadUserList()
+        runCallOnBackgroundThread(userListRequest, onSuccess, onError)
+    }
+
+    fun loadPendingRequests(
+        onSuccess: (Int, List<FriendshipResponse>) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val pendingListRequest = networkService.getPendingRequests()
+        runCallOnBackgroundThread(pendingListRequest, onSuccess, onError)
+    }
+
+    fun getUserByUserId(
+        userId: Long,
+        onSuccess: (Int, UserResponse) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val pendingListRequest = networkService.getUserByUserId(userId)
+        runCallOnBackgroundThread(pendingListRequest, onSuccess, onError)
+    }
+
     fun editUser(
         userRequest: UserRequest,
         onSuccess: (Int, UserResponse) -> Unit,
@@ -279,7 +305,7 @@ class RetrofitService() {
         runCallOnBackgroundThread(editUserRequest, onSuccess, onError)
     }
 
-    fun downloadIMageFromUrl(url: URL): ByteArray {
+    /*fun downloadIMageFromUrl(url: URL): ByteArray {
         val baos = ByteArrayOutputStream()
         var inputStream: InputStream? = null
         try {
@@ -301,5 +327,5 @@ class RetrofitService() {
             inputStream?.close()
         }
         return baos.toByteArray()
-    }
+    }*/
 }

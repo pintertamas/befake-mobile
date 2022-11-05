@@ -78,4 +78,18 @@ interface NetworkService {
     fun editUser(
         @Body userRequest: UserRequest
     ): Call<UserResponse>
+
+    @GET("/user/list")
+    fun loadUserList(): Call<List<UserResponse>>
+
+    @GET("/friendlist/pending")
+    fun getPendingRequests(): Call<List<FriendshipResponse>>
+
+    @GET("/friendlist/friends")
+    fun getListOfFriends(): Call<List<Long>>
+
+    @GET("/user/user-by-userId/{userId}")
+    fun getUserByUserId(
+        @Path("userId") userId: Long
+    ): Call<UserResponse>
 }

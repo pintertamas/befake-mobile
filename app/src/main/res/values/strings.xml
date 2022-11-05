@@ -47,4 +47,13 @@
     <string name="camera_icon">camera icon</string>
     <string name="logout">logout</string>
     <string name="clear_cache">clear cache</string>
+    <string name="friends">Friends</string>
+    <string name="add_friends">Add friends</string>
+    <string name="my_friends">My friends</string>
+    <string name="search_button">search button</string>
+    <string name="search_by_username">Search by Username</string>
+    <string name="add">Add</string>
+    <string name="search_results">Search results</string>
+    <string name="confirm">confirm</string>
+    <string name="remove_friend_button">remove friend button</string>
 </resources>
