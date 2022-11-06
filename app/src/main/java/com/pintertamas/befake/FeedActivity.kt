@@ -113,6 +113,7 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
         Log.d("USER_LIST", responseBody.toString())
         val fragment: Fragment = FriendFragment.newInstance(responseBody)
         binding.btnAddFriend.setOnClickListener {
+            findViewById<View>(R.id.toolbar).visibility = View.GONE
             addFullscreenFragment(fragment, "ADD_FRIENDS")
         }
     }
