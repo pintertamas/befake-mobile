@@ -39,7 +39,7 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
         sharedPreferences = this.getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
 
         val token = sharedPreferences.getString("jwt", "")
-        val userId = sharedPreferences.getLong("userId", 0)
+        val userId = sharedPreferences.getLong("userId", -1)
         network = RetrofitService(token!!)
         cache = CacheService.getInstance()!!
         cache.setNetworkService(network)

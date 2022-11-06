@@ -1,22 +1,30 @@
 package com.pintertamas.befake.adapter
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.pintertamas.befake.R
 import com.pintertamas.befake.database.repository.CacheService
-import com.pintertamas.befake.databinding.PostItemBinding
-import com.pintertamas.befake.databinding.UserCardBinding
 import com.pintertamas.befake.databinding.UserItemBinding
+import com.pintertamas.befake.fragment.FriendFragment
+import com.pintertamas.befake.network.response.FriendshipResponse
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
-import com.squareup.picasso.Picasso
+import io.sulek.ssml.OnSwipeListener
 
-class UsersRecyclerViewAdapter(private val listType: ListType) :
+class UsersRecyclerViewAdapter(
+    private val listType: ListType,
+    private val activity: FragmentActivity
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var userList = mutableListOf<UserResponse>()
@@ -78,20 +86,37 @@ class UsersRecyclerViewAdapter(private val listType: ListType) :
             binding.tvUsername.text = usernameTag
 
             if (listType == ListType.USER) {
+                binding.swipeContainer.isEnabled = false
                 binding.confirmAddButton.setText(R.string.add)
                 binding.removeFriendButton.visibility = View.GONE
                 binding.confirmAddButton.visibility = View.VISIBLE
                 binding.confirmAddButton.setOnClickListener {
                     addFriend(userList[position].id)
                 }
+                val searchBox: EditText = activity.findViewById(R.id.et_search)
+
+                if (searchBox.text.isNotEmpty() && !userList[position].username.contains(searchBox.text)) {
+                    binding.userItem.visibility = View.GONE
+                    binding.userItem.layoutParams = RecyclerView.LayoutParams(0, 0)
+                } else {
+                    binding.userItem.visibility = View.VISIBLE
+                }
             } else if (listType == ListType.PENDING) {
+                binding.swipeContainer.isEnabled = true
                 binding.confirmAddButton.setText(R.string.confirm)
                 binding.removeFriendButton.visibility = View.GONE
                 binding.confirmAddButton.visibility = View.VISIBLE
                 binding.confirmAddButton.setOnClickListener {
                     acceptFriendRequest(userList[position].id)
                 }
+                binding.swipeContainer.setOnSwipeListener(object : OnSwipeListener {
+                    override fun onSwipe(isExpanded: Boolean) {}
+                })
+                binding.rejectRequestButton.setOnClickListener {
+                    removeFriend(userList[position].id)
+                }
             } else if (listType == ListType.FRIEND) {
+                binding.swipeContainer.isEnabled = false
                 binding.confirmAddButton.visibility = View.GONE
                 binding.removeFriendButton.visibility = View.VISIBLE
                 binding.removeFriendButton.setOnClickListener {
@@ -101,15 +126,65 @@ class UsersRecyclerViewAdapter(private val listType: ListType) :
         }
     }
 
-    private fun removeFriend(userId: Long) {
-        TODO("Not yet implemented")
+    private fun addFriend(userId: Long) {
+        network.addFriend(
+            userId = userId,
+            onSuccess = this::addFriendSuccess,
+            onError = this::genericError,
+        )
+    }
+
+    private fun addFriendSuccess(statusCode: Int, responseBody: FriendshipResponse, userId: Long) {
+        Log.d(
+            "FRIEND_LIST",
+            "Successfully sent friend request to the user: $responseBody Status code: $statusCode"
+        )
+        val user: UserResponse = userList.first { it.id == userId }
+        val position = userList.indexOf(user)
+        userList.remove(user)
+        notifyItemChanged(position)
     }
 
     private fun acceptFriendRequest(userId: Long) {
-        TODO("Not yet implemented")
+        network.acceptRequest(
+            userId = userId,
+            onSuccess = this::acceptFriendRequestSuccess,
+            onError = this::genericError,
+        )
     }
 
-    private fun addFriend(userId: Long) {
-        TODO("Not yet implemented")
+    private fun acceptFriendRequestSuccess(statusCode: Int, responseBody: FriendshipResponse, userId: Long) {
+        Log.d(
+            "FRIEND_LIST",
+            "Successfully accepted friend request: $responseBody Status code: $statusCode"
+        )
+        val user: UserResponse = userList.first { it.id == userId }
+        val position = userList.indexOf(user)
+        userList.remove(user)
+        notifyItemChanged(position)
+    }
+
+    private fun removeFriend(userId: Long) {
+        network.removeFriend(
+            userId = userId,
+            onSuccess = this::removeFriendSuccess,
+            onError = this::genericError,
+        )
+    }
+
+    private fun removeFriendSuccess(statusCode: Int, responseBody: Boolean, userId: Long) {
+        Log.d(
+            "FRIEND_LIST",
+            "Successfully removed friend / friend request: $responseBody Status code: $statusCode"
+        )
+        val friend = userList.first { it.id == userId }
+        val position = userList.indexOf(friend)
+        userList.remove(friend)
+        notifyItemChanged(position)
+    }
+
+    private fun genericError(statusCode: Int, e: Throwable) {
+        Log.e("API_CALL_ERROR", "Error $statusCode during API call!")
+        e.printStackTrace()
     }
 }

@@ -56,4 +56,7 @@
     <string name="search_results">Search results</string>
     <string name="confirm">confirm</string>
     <string name="remove_friend_button">remove friend button</string>
+    <string name="friend_requests">Friend requests</string>
+    <string name="friend_list">Friends</string>
+    <string name="no_friends_message">Search for friends so you can share your moments with them!</string>
 </resources>

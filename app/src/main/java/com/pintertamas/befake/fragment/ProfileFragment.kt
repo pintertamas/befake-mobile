@@ -48,7 +48,6 @@ class ProfileFragment(
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.backButton.setOnClickListener {
             Log.d("BACK_ARROW", "Click")
-            activity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.VISIBLE
             parentFragmentManager.popBackStack()
         }
 
@@ -87,17 +86,22 @@ class ProfileFragment(
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<View>(R.id.toolbar).visibility = View.GONE
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        requireActivity().findViewById<View>(R.id.toolbar).visibility = View.VISIBLE
+    }
+
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.add(R.id.fragment_container_view, fragment)
         fragmentTransaction.addToBackStack(fragment.id.toString())
         fragmentTransaction.commit()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        activity?.findViewById<Toolbar>(R.id.toolbar)?.visibility = View.VISIBLE
     }
 
     override fun updateUserDetails(user: UserResponse) {

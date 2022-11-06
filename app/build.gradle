@@ -65,5 +65,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     // Pretty time
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
+    // SimpleSwipeMenuLayout-SSML
+    implementation 'io.sulek.ssml:simpleswipemenulayout:1.0.4'
 
 }

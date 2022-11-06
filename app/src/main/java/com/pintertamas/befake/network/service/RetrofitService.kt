@@ -77,9 +77,10 @@ class RetrofitService() {
         }
     }
 
-    private fun <T> runCallOnBackgroundThreadIntoVariable(
+    private fun <T, R> runCallOnBackgroundThreadWithParameterReturn(
+        param: R,
         call: Call<T>,
-        onSuccess: (Int, T) -> Unit,
+        onSuccess: (Int, T, R) -> Unit,
         onError: (Int, Throwable) -> Unit
     ) {
         Log.d("RETROFIT_SERVICE", call.request().toString())
@@ -91,7 +92,7 @@ class RetrofitService() {
                 Log.d("RESPONSE_CODE", response.code().toString())
                 if (response == null || response.code() != 200) throw Exception()
                 val responseBody = response.body()!!
-                handler.post { onSuccess(response.code(), responseBody) }
+                handler.post { onSuccess(response.code(), responseBody, param) }
             } catch (e: Exception) {
                 val code: Int = response?.code() ?: 500
                 e.printStackTrace()
@@ -181,7 +182,7 @@ class RetrofitService() {
         onError: (Int, Throwable) -> Unit
     ) {
         val getCommentsOnPostRequest = networkService.getCommentsOnPost(postId)
-        runCallOnBackgroundThreadIntoVariable(getCommentsOnPostRequest, onSuccess, onError)
+        runCallOnBackgroundThread(getCommentsOnPostRequest, onSuccess, onError)
     }
 
     fun getReactionsOnPost(
@@ -190,7 +191,7 @@ class RetrofitService() {
         onError: (Int, Throwable) -> Unit
     ) {
         val getReactionsOnPostRequest = networkService.getReactionsOnPost(postId)
-        runCallOnBackgroundThreadIntoVariable(getReactionsOnPostRequest, onSuccess, onError)
+        runCallOnBackgroundThread(getReactionsOnPostRequest, onSuccess, onError)
     }
 
     fun getTodaysPostByUser(
@@ -285,6 +286,41 @@ class RetrofitService() {
     ) {
         val pendingListRequest = networkService.getPendingRequests()
         runCallOnBackgroundThread(pendingListRequest, onSuccess, onError)
+    }
+
+    fun loadFriendList(
+        onSuccess: (Int, List<Long>) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val pendingListRequest = networkService.getListOfFriends()
+        runCallOnBackgroundThread(pendingListRequest, onSuccess, onError)
+    }
+
+    fun addFriend(
+        userId: Long,
+        onSuccess: (Int, FriendshipResponse, Long) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val addFriendRequest = networkService.addFriend(userId)
+        runCallOnBackgroundThreadWithParameterReturn(userId, addFriendRequest, onSuccess, onError)
+    }
+
+    fun acceptRequest(
+        userId: Long,
+        onSuccess: (Int, FriendshipResponse, Long) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val acceptFriendRequest = networkService.acceptFriendRequest(userId)
+        runCallOnBackgroundThreadWithParameterReturn(userId, acceptFriendRequest, onSuccess, onError)
+    }
+
+    fun removeFriend(
+        userId: Long,
+        onSuccess: (Int, Boolean, Long) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val removeFriendRequest = networkService.rejectFriend(userId)
+        runCallOnBackgroundThreadWithParameterReturn(userId, removeFriendRequest, onSuccess, onError)
     }
 
     fun getUserByUserId(

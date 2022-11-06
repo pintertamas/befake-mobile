@@ -3,6 +3,8 @@ package com.pintertamas.befake.fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -24,6 +26,8 @@ class UsersFragment(private val userList: List<UserResponse>) :
     private var _binding: FragmentUsersBinding? = null
     private val binding get() = _binding!!
 
+    private var userId: Long = -1L
+
     private lateinit var pendingRecyclerViewAdapter: UsersRecyclerViewAdapter
     private lateinit var usersRecyclerViewAdapter: UsersRecyclerViewAdapter
 
@@ -44,20 +48,47 @@ class UsersFragment(private val userList: List<UserResponse>) :
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("jwt", "")
-        val userId = sharedPreferences.getLong("userId", 0)
+        userId = sharedPreferences.getLong("userId", -1)
         network = RetrofitService(token!!)
         cache = CacheService.getInstance()!!
         cache.setNetworkService(network)
 
         setupUsersRecyclerView()
         setupPendingRecyclerView()
+
+        binding.etSearch.addTextChangedListener(
+            object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {}
+
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                    // we don't know the new length of the recycler list after filtering, so using notifyDataSetChanged() is not a bad practice here
+                    usersRecyclerViewAdapter.notifyDataSetChanged()
+                }
+            }
+        )
+
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<View>(R.id.toolbar).visibility = View.GONE
     }
 
     private fun setupUsersRecyclerView() {
         val llm = LinearLayoutManager(this.context)
         llm.orientation = LinearLayoutManager.VERTICAL
-        usersRecyclerViewAdapter = UsersRecyclerViewAdapter(UsersRecyclerViewAdapter.ListType.USER)
+        usersRecyclerViewAdapter =
+            UsersRecyclerViewAdapter(UsersRecyclerViewAdapter.ListType.USER, requireActivity())
         val list = binding.root.findViewById<RecyclerView>(R.id.user_list_recycler_view)
         println(userList)
         usersRecyclerViewAdapter.addAll(userList)
@@ -68,7 +99,8 @@ class UsersFragment(private val userList: List<UserResponse>) :
     private fun setupPendingRecyclerView() {
         val llm = LinearLayoutManager(this.context)
         llm.orientation = LinearLayoutManager.VERTICAL
-        pendingRecyclerViewAdapter = UsersRecyclerViewAdapter(UsersRecyclerViewAdapter.ListType.PENDING)
+        pendingRecyclerViewAdapter =
+            UsersRecyclerViewAdapter(UsersRecyclerViewAdapter.ListType.PENDING, requireActivity())
         val list = binding.root.findViewById<RecyclerView>(R.id.pending_list_recycler_view)
         list.layoutManager = llm
         list.adapter = pendingRecyclerViewAdapter
@@ -89,7 +121,8 @@ class UsersFragment(private val userList: List<UserResponse>) :
             "Successfully queried pending requests: $responseBody Status code: $statusCode"
         )
         responseBody.forEach {
-            getUserByUserId(it.user2Id)
+            val friendId = if (userId == it.user1Id) it.user2Id else it.user1Id
+            getUserByUserId(friendId)
             binding.friendRequests.visibility = View.VISIBLE
             binding.pendingListRecyclerView.visibility = View.VISIBLE
         }

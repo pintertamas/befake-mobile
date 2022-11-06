@@ -1,60 +1,122 @@
 package com.pintertamas.befake.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.pintertamas.befake.R
+import com.pintertamas.befake.adapter.UsersRecyclerViewAdapter
+import com.pintertamas.befake.database.repository.CacheService
+import com.pintertamas.befake.databinding.FragmentFriendBinding
+import com.pintertamas.befake.databinding.FragmentMyFriendsBinding
+import com.pintertamas.befake.databinding.FragmentUsersBinding
+import com.pintertamas.befake.network.response.FriendshipResponse
+import com.pintertamas.befake.network.response.UserResponse
+import com.pintertamas.befake.network.service.RetrofitService
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class MyFriendsFragment : Fragment(R.layout.fragment_my_friends) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MyFriendsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MyFriendsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentMyFriendsBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var network: RetrofitService
+    private lateinit var cache: CacheService
+    private lateinit var sharedPreferences: SharedPreferences
+    private val sharedPrefName = "user_shared_preference"
+
+    private lateinit var friendsRecyclerViewAdapter: UsersRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_friends, container, false)
+        _binding = FragmentMyFriendsBinding.inflate(inflater, container, false)
+        sharedPreferences =
+            requireActivity().getSharedPreferences(sharedPrefName, Context.MODE_PRIVATE)
+        val token = sharedPreferences.getString("jwt", "")
+        network = RetrofitService(token!!)
+        cache = CacheService.getInstance()!!
+        cache.setNetworkService(network)
+
+        setupFriendsRecyclerView()
+        return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<View>(R.id.toolbar).visibility = View.GONE
+    }
+
+    private fun setupFriendsRecyclerView() {
+        val llm = LinearLayoutManager(this.context)
+        llm.orientation = LinearLayoutManager.VERTICAL
+        friendsRecyclerViewAdapter =
+            UsersRecyclerViewAdapter(UsersRecyclerViewAdapter.ListType.FRIEND, requireActivity())
+        val list = binding.root.findViewById<RecyclerView>(R.id.friend_list_recycler_view)
+        list.layoutManager = llm
+        list.adapter = friendsRecyclerViewAdapter
+
+        loadFriendList()
+    }
+
+    private fun loadFriendList() {
+        network.loadFriendList(
+            onSuccess = this::getFriendListSuccess,
+            onError = this::genericError,
+        )
+    }
+
+    private fun getFriendListSuccess(statusCode: Int, responseBody: List<Long>) {
+        Log.d(
+            "FRIEND_LIST",
+            "Successfully queried friendlist: $responseBody Status code: $statusCode"
+        )
+        if (responseBody.isEmpty()) {
+            binding.noFriends.visibility = View.VISIBLE
+            binding.friendListRecyclerView.visibility = View.GONE
+        } else {
+            binding.noFriends.visibility = View.GONE
+            binding.friendListRecyclerView.visibility = View.VISIBLE
+        }
+        responseBody.forEach {
+            getUserByUserId(it)
+        }
+    }
+
+    private fun getUserByUserId(userId: Long) {
+        network.getUserByUserId(
+            userId = userId,
+            onSuccess = this::getUserByUserIdSuccess,
+            onError = this::genericError,
+        )
+    }
+
+    private fun getUserByUserIdSuccess(statusCode: Int, responseBody: UserResponse) {
+        Log.d(
+            "USER_BY_USERID",
+            "Successfully queried user by userId: $responseBody Status code: $statusCode"
+        )
+        val user: UserResponse = responseBody
+        friendsRecyclerViewAdapter.add(user)
+    }
+
+    private fun genericError(statusCode: Int, e: Throwable) {
+        Log.e("API_CALL_ERROR", "Error $statusCode during API call!")
+        e.printStackTrace()
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MyFriendsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MyFriendsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        fun newInstance() = MyFriendsFragment()
     }
 }

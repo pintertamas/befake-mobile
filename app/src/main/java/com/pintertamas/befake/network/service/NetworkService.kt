@@ -82,6 +82,21 @@ interface NetworkService {
     @GET("/user/list")
     fun loadUserList(): Call<List<UserResponse>>
 
+    @POST("/friendlist/add/{userId}")
+    fun addFriend(
+        @Path("userId") userId: Long
+    ): Call<FriendshipResponse>
+
+    @PATCH("/friendlist/accept/{userId}")
+    fun acceptFriendRequest(
+        @Path("userId") userId: Long
+    ): Call<FriendshipResponse>
+
+    @PATCH("/friendlist/reject/{userId}")
+    fun rejectFriend(
+        @Path("userId") userId: Long
+    ): Call<Boolean>
+
     @GET("/friendlist/pending")
     fun getPendingRequests(): Call<List<FriendshipResponse>>
 
