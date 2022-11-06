@@ -73,6 +73,12 @@ class UsersRecyclerViewAdapter(
         notifyItemInserted(size)
     }
 
+    fun remove(user: UserResponse) {
+        val userIndex = userList.indexOf(user)
+        this.userList.remove(user)
+        notifyItemRangeRemoved(0, userIndex)
+    }
+
     private inner class UserViewHolder(private val binding: UserItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
@@ -140,9 +146,9 @@ class UsersRecyclerViewAdapter(
             "Successfully sent friend request to the user: $responseBody Status code: $statusCode"
         )
         val user: UserResponse = userList.first { it.id == userId }
-        val position = userList.indexOf(user)
+        val prevSize = userList.size
         userList.remove(user)
-        notifyItemChanged(position)
+        notifyItemRangeRemoved(0, prevSize)
     }
 
     private fun acceptFriendRequest(userId: Long) {

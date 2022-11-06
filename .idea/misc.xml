@@ -47,9 +47,11 @@
         <entry key="app/src/main/res/layout/fragment_my_friends.xml" value="0.29585292860196666" />
         <entry key="app/src/main/res/layout/fragment_new_post.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.37910376364249243" />
-        <entry key="app/src/main/res/layout/fragment_users.xml" value="0.2025482246903863" />
+        <entry key="app/src/main/res/layout/fragment_users.xml" value="0.1483673164872613" />
         <entry key="app/src/main/res/layout/image_holder.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/post_item.xml" value="0.21480712890625003" />
+        <entry key="app/src/main/res/layout/recycler_view_item.xml" value="0.14458838278311742" />
+        <entry key="app/src/main/res/layout/recycler_view_item_1.xml" value="0.14458838278311742" />
         <entry key="app/src/main/res/layout/user_card.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/user_detail_linear_layout.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/user_item.xml" value="0.27208957223619035" />

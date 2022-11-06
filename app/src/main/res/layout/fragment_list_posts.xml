@@ -8,6 +8,7 @@
     tools:context=".fragment.ListPostsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        tools:listitem="@layout/post_item"
         android:id="@+id/posts_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

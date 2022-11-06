@@ -90,10 +90,13 @@ class UsersFragment(private val userList: List<UserResponse>) :
         usersRecyclerViewAdapter =
             UsersRecyclerViewAdapter(UsersRecyclerViewAdapter.ListType.USER, requireActivity())
         val list = binding.root.findViewById<RecyclerView>(R.id.user_list_recycler_view)
-        println(userList)
-        usersRecyclerViewAdapter.addAll(userList)
+        //println(userList)
+        //val filteredUserList = userList.filter { it.id != userId }
+        //usersRecyclerViewAdapter.addAll(filteredUserList)
         list.layoutManager = llm
         list.adapter = usersRecyclerViewAdapter
+
+        loadFriendList()
     }
 
     private fun setupPendingRecyclerView() {
@@ -108,6 +111,24 @@ class UsersFragment(private val userList: List<UserResponse>) :
         loadPendingRequests()
     }
 
+    private fun loadFriendList() {
+        network.loadFriendList(
+            onSuccess = this::getFriendListSuccess,
+            onError = this::genericError,
+        )
+    }
+
+    private fun getFriendListSuccess(statusCode: Int, responseBody: List<Long>) {
+        Log.d(
+            "FRIEND_LIST",
+            "Successfully queried friendlist: $responseBody Status code: $statusCode"
+        )
+        println(userList)
+        val filteredUserList = userList.filter { !responseBody.contains(it.id) && it.id != userId }
+        print(filteredUserList)
+        usersRecyclerViewAdapter.addAll(filteredUserList)
+    }
+
     private fun loadPendingRequests() {
         network.loadPendingRequests(
             onSuccess = this::getPendingRequestsSuccess,
@@ -120,29 +141,48 @@ class UsersFragment(private val userList: List<UserResponse>) :
             "PENDING_REQUESTS",
             "Successfully queried pending requests: $responseBody Status code: $statusCode"
         )
-        responseBody.forEach {
-            val friendId = if (userId == it.user1Id) it.user2Id else it.user1Id
-            getUserByUserId(friendId)
+        val friendships = responseBody
+        val incoming = friendships.filter { it.user1Id != userId }
+        val outgoing = friendships.filter { it.user2Id != userId }
+
+        incoming.forEach {
+            getUserByUserId(it.user1Id, this::getIncomingRequestUsersSuccess)
+            binding.friendRequests.visibility = View.VISIBLE
+            binding.pendingListRecyclerView.visibility = View.VISIBLE
+        }
+
+        outgoing.forEach {
+            getUserByUserId(it.user2Id, this::getOutgoingRequestUsersSuccess)
             binding.friendRequests.visibility = View.VISIBLE
             binding.pendingListRecyclerView.visibility = View.VISIBLE
         }
     }
 
-    private fun getUserByUserId(userId: Long) {
+    private fun getUserByUserId(userId: Long, onSuccess: (Int, UserResponse) -> Unit) {
         network.getUserByUserId(
             userId = userId,
-            onSuccess = this::getUserByUserIdSuccess,
+            onSuccess = onSuccess,
             onError = this::genericError,
         )
     }
 
-    private fun getUserByUserIdSuccess(statusCode: Int, responseBody: UserResponse) {
+    private fun getIncomingRequestUsersSuccess(statusCode: Int, responseBody: UserResponse) {
         Log.d(
             "USER_BY_USERID",
             "Successfully queried user by userId: $responseBody Status code: $statusCode"
         )
         val user: UserResponse = responseBody
         pendingRecyclerViewAdapter.add(user)
+        usersRecyclerViewAdapter.remove(user)
+    }
+
+    private fun getOutgoingRequestUsersSuccess(statusCode: Int, responseBody: UserResponse) {
+        Log.d(
+            "USER_BY_USERID",
+            "Successfully queried user by userId: $responseBody Status code: $statusCode"
+        )
+        val user: UserResponse = responseBody
+        usersRecyclerViewAdapter.remove(user)
     }
 
     private fun genericError(statusCode: Int, e: Throwable) {

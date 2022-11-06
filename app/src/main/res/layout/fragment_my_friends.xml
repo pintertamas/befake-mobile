@@ -29,7 +29,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/friend_list"
         tools:itemCount="12"
-        tools:listitem="@layout/recycler_view_item_1" />
+        tools:listitem="@layout/user_item" />
 
     <LinearLayout
         android:id="@+id/no_friends"
