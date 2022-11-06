@@ -74,9 +74,10 @@ class UsersRecyclerViewAdapter(
     }
 
     fun remove(user: UserResponse) {
+        notifyDataSetChanged() // TODO: this is a bad workaround but I can't figure out where the notifications go sideways
         val userIndex = userList.indexOf(user)
         this.userList.remove(user)
-        notifyItemRangeRemoved(0, userIndex)
+        notifyItemRemoved(userIndex)
     }
 
     private inner class UserViewHolder(private val binding: UserItemBinding) :
@@ -146,9 +147,7 @@ class UsersRecyclerViewAdapter(
             "Successfully sent friend request to the user: $responseBody Status code: $statusCode"
         )
         val user: UserResponse = userList.first { it.id == userId }
-        val prevSize = userList.size
-        userList.remove(user)
-        notifyItemRangeRemoved(0, prevSize)
+        remove(user)
     }
 
     private fun acceptFriendRequest(userId: Long) {
@@ -159,15 +158,17 @@ class UsersRecyclerViewAdapter(
         )
     }
 
-    private fun acceptFriendRequestSuccess(statusCode: Int, responseBody: FriendshipResponse, userId: Long) {
+    private fun acceptFriendRequestSuccess(
+        statusCode: Int,
+        responseBody: FriendshipResponse,
+        userId: Long
+    ) {
         Log.d(
             "FRIEND_LIST",
             "Successfully accepted friend request: $responseBody Status code: $statusCode"
         )
         val user: UserResponse = userList.first { it.id == userId }
-        val position = userList.indexOf(user)
-        userList.remove(user)
-        notifyItemChanged(position)
+        remove(user)
     }
 
     private fun removeFriend(userId: Long) {
@@ -184,9 +185,7 @@ class UsersRecyclerViewAdapter(
             "Successfully removed friend / friend request: $responseBody Status code: $statusCode"
         )
         val friend = userList.first { it.id == userId }
-        val position = userList.indexOf(friend)
-        userList.remove(friend)
-        notifyItemChanged(position)
+        remove(friend)
     }
 
     private fun genericError(statusCode: Int, e: Throwable) {
