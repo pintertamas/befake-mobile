@@ -17,6 +17,14 @@ class NewPostFragment : Fragment(R.layout.fragment_new_post) {
     private var _binding: FragmentNewPostBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            callback
+        )
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,35 +41,23 @@ class NewPostFragment : Fragment(R.layout.fragment_new_post) {
         return binding.root
     }
 
+    private val callback: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val toolbar: View? = requireActivity().findViewById(R.id.toolbar)
+                if (toolbar?.visibility == View.VISIBLE) {
+                    requireActivity().finish()
+                } else {
+                    toolbar?.visibility = View.VISIBLE
+                    requireActivity().supportFragmentManager.popBackStack()
+                }
+            }
+        }
+
     override fun onResume() {
         super.onResume()
         requireActivity().findViewById<View>(R.id.toolbar).visibility = View.VISIBLE
     }
-
-    /*override fun onAttach(context: Context) {
-        super.onAttach(context)
-        val callback: OnBackPressedCallback =
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    val fragment: Fragment? =
-                        requireActivity().supportFragmentManager.findFragmentByTag("NEW_POST_FRAGMENT")
-                    if (requireActivity()
-                            .supportFragmentManager
-                            .getBackStackEntryAt(
-                                requireActivity()
-                                    .supportFragmentManager.backStackEntryCount - 1
-                            )
-                            .name!!.toString() == fragment!!.id.toString()
-                    )
-                        requireActivity().finish()
-                    else requireActivity().supportFragmentManager.popBackStack()
-                }
-            }
-        requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            callback
-        )
-    }*/
 
     companion object {
         @JvmStatic

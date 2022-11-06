@@ -41,7 +41,7 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/edit_text_profile.xml" value="0.2776268115942029" />
-        <entry key="app/src/main/res/layout/fragment_edit_profile.xml" value="0.17682952880859373" />
+        <entry key="app/src/main/res/layout/fragment_edit_profile.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_friend.xml" value="0.18332795642671132" />
         <entry key="app/src/main/res/layout/fragment_list_posts.xml" value="0.2776268115942029" />
         <entry key="app/src/main/res/layout/fragment_my_friends.xml" value="0.29585292860196666" />

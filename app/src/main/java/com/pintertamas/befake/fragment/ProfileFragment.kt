@@ -52,6 +52,7 @@ class ProfileFragment(
         }
 
         binding.editButton.setOnClickListener {
+            // this is for the change subscription
             val listPostsFragment: Fragment =
                 requireActivity().supportFragmentManager.findFragmentByTag("LIST_POST_FRAGMENT")!!
             val fragment: Fragment = EditProfileFragment.newInstance(

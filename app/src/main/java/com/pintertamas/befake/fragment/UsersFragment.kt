@@ -84,6 +84,11 @@ class UsersFragment(private val userList: List<UserResponse>) :
         requireActivity().findViewById<View>(R.id.toolbar).visibility = View.GONE
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        requireActivity().findViewById<View>(R.id.toolbar).visibility = View.VISIBLE
+    }
+
     private fun setupUsersRecyclerView() {
         val llm = LinearLayoutManager(this.context)
         llm.orientation = LinearLayoutManager.VERTICAL

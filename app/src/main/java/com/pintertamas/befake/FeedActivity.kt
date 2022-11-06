@@ -15,7 +15,6 @@ import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.database.repository.CacheService
 import com.pintertamas.befake.fragment.*
 import com.pintertamas.befake.network.service.RetrofitService
-import com.squareup.picasso.Picasso
 import java.sql.Timestamp
 
 
@@ -66,18 +65,18 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
         binding.toolbar.visibility = View.VISIBLE
     }
 
-    private fun addFragment(fragment: Fragment, tag: String) {
+    private fun replaceFragment(fragment: Fragment, tag: String) {
         println("Adding fragment ${fragment.id} with tag $tag")
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.fragment_container_view, fragment, tag)
+        fragmentTransaction.replace(R.id.fragment_container_view, fragment, tag)
         fragmentTransaction.addToBackStack(fragment.id.toString())
         fragmentTransaction.commit()
     }
 
     private fun addFullscreenFragment(fragment: Fragment, tag: String) {
         binding.toolbar.visibility = View.GONE
-        addFragment(fragment, tag)
+        replaceFragment(fragment, tag)
     }
 
     private fun getUser(userId: Long) {
@@ -140,8 +139,8 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
         )
         canUserPost = responseBody
 
-        addFragment(ListPostsFragment.newInstance(user), "LIST_POST_FRAGMENT")
-        if (canUserPost) addFragment(NewPostFragment.newInstance(), "NEW_POST_FRAGMENT")
+        replaceFragment(ListPostsFragment.newInstance(user), "LIST_POST_FRAGMENT")
+        if (canUserPost) replaceFragment(NewPostFragment.newInstance(), "NEW_POST_FRAGMENT")
     }
 
     private fun genericError(statusCode: Int, e: Throwable) {
