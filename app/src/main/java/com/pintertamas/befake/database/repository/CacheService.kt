@@ -1,19 +1,13 @@
 package com.pintertamas.befake.database.repository
 
-import android.graphics.Bitmap
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import com.pintertamas.befake.R
 import com.pintertamas.befake.database.ImageCacheDatabase
 import com.pintertamas.befake.database.converter.ImageBitmapString
-import com.pintertamas.befake.database.dao.ImageCacheDao
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
-import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Picasso.LoadedFrom
-import com.squareup.picasso.Target
 import okhttp3.ResponseBody
 
 
@@ -56,6 +50,10 @@ object CacheService {
     fun clear() {
         //db.clear()
         cache.clear()
+    }
+
+    fun resetKey(key: String) {
+        cache.remove(key)
     }
 
     fun cacheProfilePicture(user: UserResponse, target: ImageView) {

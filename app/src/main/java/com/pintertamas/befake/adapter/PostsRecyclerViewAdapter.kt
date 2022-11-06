@@ -16,7 +16,6 @@ import com.pintertamas.befake.network.response.PostResponse
 import com.pintertamas.befake.network.response.ReactionResponse
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
-import com.squareup.picasso.Picasso
 import java.sql.Timestamp
 import java.util.*
 
@@ -30,7 +29,6 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     private var reactionsOnPosts: HashMap<Long, List<ReactionResponse>> = HashMap()
     private lateinit var network: RetrofitService
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var picasso: Picasso
     private lateinit var beFakeTime: Timestamp
 
     private val sharedPrefName = "user_shared_preference"
@@ -134,7 +132,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
                 binding.reaction3.visibility = View.VISIBLE
             }
 
-            val lateTimeText = calculateLateness(userPost!!.beFakeTime, userPost!!.postingTime)
+            val lateTimeText = calculateLateness(userPost!!.beFakeTime)
             binding.userDetailInclude.tvPostTime.text = lateTimeText
         }
     }
@@ -220,7 +218,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
                 binding.reaction3.visibility = View.VISIBLE
             }
 
-            val lateTimeText = calculateLateness(postList[position - 1].beFakeTime, postList[position - 1].postingTime)
+            val lateTimeText = calculateLateness(postList[position - 1].beFakeTime)
             binding.userDetailInclude.tvPostTime.text = lateTimeText
         }
     }
@@ -230,7 +228,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         private const val POST_VIEW = 2
     }
 
-    private fun calculateLateness(time1: String, time2: String): String {
+    private fun calculateLateness(time1: String): String {
         val beFakeTime: Timestamp = Constants.convertStringToTimestamp(time1)
         val postingTime: Timestamp = Constants.convertStringToTimestamp(userPost!!.postingTime)
         val diff: Long = beFakeTime.time - postingTime.time
@@ -301,7 +299,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     fun addAll(posts: List<PostResponse>) {
         println(posts)
         val size = itemCount + posts.size
-        postList.addAll(posts.sortedByDescending { calculateLateness(it.beFakeTime, it.postingTime) })
+        postList.addAll(posts.sortedByDescending { calculateLateness(it.beFakeTime) })
         notifyItemRangeInserted(size, posts.size)
     }
 

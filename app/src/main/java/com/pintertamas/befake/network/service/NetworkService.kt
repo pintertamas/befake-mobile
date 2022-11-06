@@ -3,10 +3,11 @@ package com.pintertamas.befake.network.service
 import com.pintertamas.befake.network.request.JwtRequest
 import com.pintertamas.befake.network.request.UserRequest
 import com.pintertamas.befake.network.response.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
-import java.sql.Timestamp
 
 interface NetworkService {
 
@@ -81,6 +82,12 @@ interface NetworkService {
 
     @GET("/user/list")
     fun loadUserList(): Call<List<UserResponse>>
+
+    @Multipart
+    @PATCH("/user/upload-profile-picture")
+    fun uploadProfilePicture(
+        @Part picture: MultipartBody.Part,
+    ): Call<UserResponse>
 
     @POST("/friendlist/add/{userId}")
     fun addFriend(

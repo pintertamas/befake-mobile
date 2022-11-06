@@ -21,7 +21,6 @@ import com.pintertamas.befake.network.response.PostResponse
 import com.pintertamas.befake.network.response.ReactionResponse
 import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.network.service.RetrofitService
-import com.squareup.picasso.Picasso
 import java.sql.Timestamp
 
 class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.fragment_list_posts),

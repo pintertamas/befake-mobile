@@ -10,16 +10,14 @@ import com.pintertamas.befake.network.request.UserRequest
 import com.pintertamas.befake.network.response.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.ResponseBody
+import okhttp3.*
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Url
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
@@ -220,6 +218,19 @@ class RetrofitService() {
         )
     }
 
+    fun editProfilePicture(
+        file: MultipartBody.Part,
+        onSuccess: (Int, UserResponse) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val getProfilePictureUrlRequest = networkService.uploadProfilePicture(file)
+        runCallOnBackgroundThread(
+            getProfilePictureUrlRequest,
+            onSuccess,
+            onError
+        )
+    }
+
     fun loadProfilePictureUrlIntoView(
         id: Long,
         view: ImageView,
@@ -311,7 +322,12 @@ class RetrofitService() {
         onError: (Int, Throwable) -> Unit
     ) {
         val acceptFriendRequest = networkService.acceptFriendRequest(userId)
-        runCallOnBackgroundThreadWithParameterReturn(userId, acceptFriendRequest, onSuccess, onError)
+        runCallOnBackgroundThreadWithParameterReturn(
+            userId,
+            acceptFriendRequest,
+            onSuccess,
+            onError
+        )
     }
 
     fun removeFriend(
@@ -320,7 +336,12 @@ class RetrofitService() {
         onError: (Int, Throwable) -> Unit
     ) {
         val removeFriendRequest = networkService.rejectFriend(userId)
-        runCallOnBackgroundThreadWithParameterReturn(userId, removeFriendRequest, onSuccess, onError)
+        runCallOnBackgroundThreadWithParameterReturn(
+            userId,
+            removeFriendRequest,
+            onSuccess,
+            onError
+        )
     }
 
     fun getUserByUserId(
