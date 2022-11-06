@@ -178,7 +178,9 @@ class EditProfileFragment(
         val cache = CacheService.getInstance()
         if (user.profilePicture != null)
             cache?.resetKey(user.profilePicture!!)
-        editUserListeners.notify()
+        editUserListeners.forEach {
+            it.updateUserDetails(user)
+        }
     }
 
     private fun editUser(userRequest: UserRequest) {

@@ -26,7 +26,6 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var user: UserResponse
     private var canUserPost: Boolean = false
-    private var beFakeTime: Timestamp? = null
 
     private val sharedPrefName = "user_shared_preference"
 
