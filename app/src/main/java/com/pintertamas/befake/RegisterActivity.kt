@@ -20,6 +20,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private var isUsernameCorrect: Boolean = false
     private var isPasswordCorrect: Boolean = false
+    private var isFullNameCorrect: Boolean = false
     private var isEmailCorrect: Boolean = false
     private val passwordRegex: Regex = Regex("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$")
     private val emailRegex: Regex =
@@ -89,6 +90,28 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
+        binding.etFullName.addTextChangedListener { text ->
+            if (text.toString().length < 7 || text.toString().length > 20) {
+                binding.etFullName.setTextColor(
+                    ContextCompat.getColor(
+                        baseContext,
+                        R.color.red
+                    )
+                )
+                isFullNameCorrect = false
+                toggleRegisterButtonState()
+            } else {
+                binding.etFullName.setTextColor(
+                    ContextCompat.getColor(
+                        baseContext,
+                        R.color.dark_grey
+                    )
+                )
+                isFullNameCorrect = true
+                toggleRegisterButtonState()
+            }
+        }
+
         binding.etEmail.addTextChangedListener { text ->
             if (!text.toString().matches(emailRegex)) {
                 binding.etEmail.setTextColor(
@@ -113,7 +136,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun toggleRegisterButtonState() {
-        binding.btnRegister.isEnabled = isUsernameCorrect && isPasswordCorrect && isEmailCorrect
+        binding.btnRegister.isEnabled = isUsernameCorrect && isPasswordCorrect && isFullNameCorrect && isEmailCorrect
         if (binding.btnRegister.isEnabled)
             binding.btnRegister.background.setTint(
                 ContextCompat.getColor(
