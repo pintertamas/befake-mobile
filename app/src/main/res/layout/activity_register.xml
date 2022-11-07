@@ -79,7 +79,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/ic_user_solid">
+            app:startIconDrawable="@drawable/ic_file_signature_solid">
 
             <EditText
                 android:id="@+id/et_full_name"
@@ -100,7 +100,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/ic_user_solid">
+            app:startIconDrawable="@drawable/ic_envelope_solid">
 
             <EditText
                 android:id="@+id/et_email"
@@ -121,7 +121,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/ic_user_solid">
+            app:startIconDrawable="@drawable/ic_book_atlas_solid">
 
             <EditText
                 android:id="@+id/et_biography"
@@ -142,7 +142,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/ic_user_solid">
+            app:startIconDrawable="@drawable/ic_location_dot_solid">
 
             <EditText
                 android:id="@+id/et_location"
