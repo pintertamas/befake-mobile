@@ -1,9 +1,11 @@
 package com.pintertamas.befake.fragment
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +14,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.pintertamas.befake.constant.Constants
@@ -41,6 +45,7 @@ class EditProfileFragment(
     private lateinit var network: RetrofitService
     private lateinit var imagePicker: ImagePicker.Builder
     private lateinit var fileUri: Uri
+    private var cameraPermission: Boolean = false
 
     private val sharedPrefName = "user_shared_preference"
 
@@ -117,10 +122,51 @@ class EditProfileFragment(
                     )
                 }
                 else -> {
-                    Constants.showErrorSnackbar(requireContext(), layoutInflater, "Task Cancelled")
+                    Constants.showErrorSnackbar(requireContext(), layoutInflater, "Upload Cancelled")
                 }
             }
         }
+
+    private fun checkPermissions() {
+        cameraPermission = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!cameraPermission) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.CAMERA), 1
+            )
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            1 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    if ((ContextCompat.checkSelfPermission(
+                            requireActivity(),
+                            Manifest.permission.CAMERA
+                        ) == PackageManager.PERMISSION_GRANTED)
+                    ) {
+                        Log.d("PERMISSIONS", "Permission Granted")
+                        cameraPermission = true
+                    }
+                } else {
+                    Log.d("PERMISSIONS", "Permission Denied")
+                    cameraPermission = false
+                }
+                return
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -147,9 +193,16 @@ class EditProfileFragment(
         }
 
         binding.civProfilePicture.setOnClickListener {
-            imagePicker.createIntent { intent ->
-                startForProfileImageResult.launch(intent)
-            }
+            checkPermissions()
+            if (cameraPermission)
+                imagePicker.createIntent { intent ->
+                    startForProfileImageResult.launch(intent)
+                }
+            else Constants.showErrorSnackbar(
+                requireContext(),
+                layoutInflater,
+                "Camera permission is required"
+            )
         }
 
         binding.etFullName.setText(user.fullName ?: "")
@@ -166,7 +219,7 @@ class EditProfileFragment(
         network.editProfilePicture(
             file = file,
             onSuccess = this::editProfilePictureSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -187,7 +240,7 @@ class EditProfileFragment(
         network.editUser(
             userRequest = userRequest,
             onSuccess = this::editUserSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -213,7 +266,7 @@ class EditProfileFragment(
             username = user.username,
             password = user.password,
             onSuccess = this::loginSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -234,7 +287,7 @@ class EditProfileFragment(
         editor.apply()
     }
 
-    private fun genericError(statusCode: Int, e: Throwable) {
+    private fun generalError(statusCode: Int, e: Throwable) {
         Log.e("API_ERROR", "Error $statusCode during API call")
         e.printStackTrace()
     }

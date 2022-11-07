@@ -362,6 +362,17 @@ class RetrofitService() {
         runCallOnBackgroundThread(editUserRequest, onSuccess, onError)
     }
 
+    fun createPost(
+        mainPhoto: MultipartBody.Part,
+        selfiePhoto: MultipartBody.Part,
+        location: String,
+        onSuccess: (Int, PostResponse) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val editUserRequest = networkService.createPost(mainPhoto, selfiePhoto, location)
+        runCallOnBackgroundThread(editUserRequest, onSuccess, onError)
+    }
+
     /*fun downloadIMageFromUrl(url: URL): ByteArray {
         val baos = ByteArrayOutputStream()
         var inputStream: InputStream? = null

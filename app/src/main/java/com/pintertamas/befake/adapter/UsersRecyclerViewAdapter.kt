@@ -137,7 +137,7 @@ class UsersRecyclerViewAdapter(
         network.addFriend(
             userId = userId,
             onSuccess = this::addFriendSuccess,
-            onError = this::genericError,
+            onError = this::generalError,
         )
     }
 
@@ -154,7 +154,7 @@ class UsersRecyclerViewAdapter(
         network.acceptRequest(
             userId = userId,
             onSuccess = this::acceptFriendRequestSuccess,
-            onError = this::genericError,
+            onError = this::generalError,
         )
     }
 
@@ -175,7 +175,7 @@ class UsersRecyclerViewAdapter(
         network.removeFriend(
             userId = userId,
             onSuccess = this::removeFriendSuccess,
-            onError = this::genericError,
+            onError = this::generalError,
         )
     }
 
@@ -188,7 +188,7 @@ class UsersRecyclerViewAdapter(
         remove(friend)
     }
 
-    private fun genericError(statusCode: Int, e: Throwable) {
+    private fun generalError(statusCode: Int, e: Throwable) {
         Log.e("API_CALL_ERROR", "Error $statusCode during API call!")
         e.printStackTrace()
     }

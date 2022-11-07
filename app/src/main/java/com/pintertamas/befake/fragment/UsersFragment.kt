@@ -119,7 +119,7 @@ class UsersFragment(private val userList: List<UserResponse>) :
     private fun loadFriendList() {
         network.loadFriendList(
             onSuccess = this::getFriendListSuccess,
-            onError = this::genericError,
+            onError = this::generalError,
         )
     }
 
@@ -137,7 +137,7 @@ class UsersFragment(private val userList: List<UserResponse>) :
     private fun loadPendingRequests() {
         network.loadPendingRequests(
             onSuccess = this::getPendingRequestsSuccess,
-            onError = this::genericError,
+            onError = this::generalError,
         )
     }
 
@@ -167,7 +167,7 @@ class UsersFragment(private val userList: List<UserResponse>) :
         network.getUserByUserId(
             userId = userId,
             onSuccess = onSuccess,
-            onError = this::genericError,
+            onError = this::generalError,
         )
     }
 
@@ -190,7 +190,7 @@ class UsersFragment(private val userList: List<UserResponse>) :
         usersRecyclerViewAdapter.remove(user)
     }
 
-    private fun genericError(statusCode: Int, e: Throwable) {
+    private fun generalError(statusCode: Int, e: Throwable) {
         Log.e("API_CALL_ERROR", "Error $statusCode during API call!")
         e.printStackTrace()
     }

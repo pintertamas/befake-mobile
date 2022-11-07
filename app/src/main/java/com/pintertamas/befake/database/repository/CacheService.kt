@@ -106,7 +106,7 @@ object CacheService {
             user = user,
             view = view,
             onSuccess = this::getImageUrlSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -115,7 +115,7 @@ object CacheService {
             id = java.lang.Long.decode(id),
             view = view,
             onSuccess = this::getImageUrlSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -124,7 +124,7 @@ object CacheService {
             filename = filename,
             view = view,
             onSuccess = this::getImageUrlSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -133,7 +133,7 @@ object CacheService {
             filename = filename,
             view = view,
             onSuccess = this::getImageUrlSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -158,7 +158,7 @@ object CacheService {
             )
     }
 
-    private fun genericError(statusCode: Int, e: Throwable) {
+    private fun generalError(statusCode: Int, e: Throwable) {
         Log.e("API_ERROR", "Error $statusCode during API call")
         e.printStackTrace()
     }

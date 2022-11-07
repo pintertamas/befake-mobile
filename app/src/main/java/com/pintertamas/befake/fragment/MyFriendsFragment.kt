@@ -77,7 +77,7 @@ class MyFriendsFragment : Fragment(R.layout.fragment_my_friends) {
     private fun loadFriendList() {
         network.loadFriendList(
             onSuccess = this::getFriendListSuccess,
-            onError = this::genericError,
+            onError = this::generalError,
         )
     }
 
@@ -102,7 +102,7 @@ class MyFriendsFragment : Fragment(R.layout.fragment_my_friends) {
         network.getUserByUserId(
             userId = userId,
             onSuccess = this::getUserByUserIdSuccess,
-            onError = this::genericError,
+            onError = this::generalError,
         )
     }
 
@@ -115,7 +115,7 @@ class MyFriendsFragment : Fragment(R.layout.fragment_my_friends) {
         friendsRecyclerViewAdapter.add(user)
     }
 
-    private fun genericError(statusCode: Int, e: Throwable) {
+    private fun generalError(statusCode: Int, e: Throwable) {
         Log.e("API_CALL_ERROR", "Error $statusCode during API call!")
         e.printStackTrace()
     }

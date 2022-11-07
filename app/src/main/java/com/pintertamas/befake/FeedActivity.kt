@@ -15,8 +15,6 @@ import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.database.repository.CacheService
 import com.pintertamas.befake.fragment.*
 import com.pintertamas.befake.network.service.RetrofitService
-import java.sql.Timestamp
-
 
 class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener {
 
@@ -82,7 +80,7 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
         network.getUser(
             userId = userId,
             onSuccess = this::getUserSuccess,
-            onError = this::genericError,
+            onError = this::generalError,
         )
     }
 
@@ -96,10 +94,14 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
         canUserPost()
     }
 
+    fun getCurrentUser(): UserResponse {
+        return user
+    }
+
     private fun loadUserList() {
         network.loadUserList(
             onSuccess = this::onLoadUsersSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -128,7 +130,7 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
     private fun canUserPost() {
         network.canUserPost(
             onSuccess = this::canUserPostSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -140,10 +142,10 @@ class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener
         canUserPost = responseBody
 
         replaceFragment(ListPostsFragment.newInstance(user), "LIST_POST_FRAGMENT")
-        if (canUserPost) replaceFragment(NewPostFragment.newInstance(), "NEW_POST_FRAGMENT")
+        if (canUserPost) replaceFragment(NewPostFragment.newInstance(user), "NEW_POST_FRAGMENT")
     }
 
-    private fun genericError(statusCode: Int, e: Throwable) {
+    private fun generalError(statusCode: Int, e: Throwable) {
         Log.e("API_CALL_ERROR", "Error $statusCode during API call!")
         e.printStackTrace()
     }

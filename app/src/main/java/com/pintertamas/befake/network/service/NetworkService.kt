@@ -1,9 +1,9 @@
 package com.pintertamas.befake.network.service
 
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable
 import com.pintertamas.befake.network.request.JwtRequest
 import com.pintertamas.befake.network.request.UserRequest
 import com.pintertamas.befake.network.response.*
-import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -88,6 +88,14 @@ interface NetworkService {
     fun uploadProfilePicture(
         @Part picture: MultipartBody.Part,
     ): Call<UserResponse>
+
+    @Multipart
+    @POST("/post/create")
+    fun createPost(
+        @Part mainPhoto: MultipartBody.Part,
+        @Part selfiePhoto: MultipartBody.Part,
+        @Part("location") location: String
+    ): Call<PostResponse>
 
     @POST("/friendlist/add/{userId}")
     fun addFriend(

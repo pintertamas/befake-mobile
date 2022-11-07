@@ -75,7 +75,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
     private fun getBeFakeTime() {
         network.getBeFakeTime(
             onSuccess = this::getBeFakeTimeSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -96,7 +96,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
         network.getTodaysPostByUser(
             userId = userId,
             onSuccess = this::getTodaysPostByUserSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -116,7 +116,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
     private fun getPostsFromFriends() {
         network.getPostsFromFriends(
             onSuccess = this::getPostsFromFriendsSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -138,7 +138,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
         network.getReactionsOnPost(
             postId = postId,
             onSuccess = this::getReactionsOnPostSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -156,7 +156,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
         network.getCommentsOnPost(
             postId = postId,
             onSuccess = this::getCommentsOnPostSuccess,
-            onError = this::genericError
+            onError = this::generalError
         )
     }
 
@@ -170,7 +170,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
         postsRecyclerViewAdapter.addComments(comments[0].postId, comments)
     }
 
-    private fun genericError(statusCode: Int, e: Throwable) {
+    private fun generalError(statusCode: Int, e: Throwable) {
         Log.e("API_CALL_ERROR", "Error $statusCode during API call")
         e.printStackTrace()
     }
