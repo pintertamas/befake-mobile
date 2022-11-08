@@ -1,13 +1,21 @@
 package com.pintertamas.befake
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat
 import androidx.fragment.app.Fragment
 import androidx.room.Room
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.pintertamas.befake.constant.Constants
 import com.pintertamas.befake.database.ImageCacheDatabase
 import com.pintertamas.befake.databinding.ActivityFeedBinding
@@ -15,6 +23,10 @@ import com.pintertamas.befake.network.response.UserResponse
 import com.pintertamas.befake.database.repository.CacheService
 import com.pintertamas.befake.fragment.*
 import com.pintertamas.befake.network.service.RetrofitService
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 class FeedActivity : AppCompatActivity(), EditProfileFragment.EditedUserListener {
 

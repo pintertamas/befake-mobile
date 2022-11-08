@@ -19,8 +19,7 @@ import com.pintertamas.befake.network.service.RetrofitService
 import java.sql.Timestamp
 import java.util.*
 
-
-class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PostsRecyclerViewAdapter(private val reactionListener: ReactionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var userCardDetails: UserResponse? = null
     private var userPost: PostResponse? = null
@@ -218,9 +217,17 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
                 binding.reaction3.visibility = View.VISIBLE
             }
 
+            binding.reactionIcon.setOnClickListener {
+                reactionListener.reaction(postList[position - 1].id, position - 1)
+            }
+
             val lateTimeText = calculateLateness(postList[position - 1].beFakeTime)
             binding.userDetailInclude.tvPostTime.text = lateTimeText
         }
+    }
+
+    interface ReactionListener {
+        fun reaction(postId: Long, position: Int)
     }
 
     companion object {
@@ -231,7 +238,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
     private fun calculateLateness(time1: String): String {
         val beFakeTime: Timestamp = Constants.convertStringToTimestamp(time1)
         val postingTime: Timestamp = Constants.convertStringToTimestamp(userPost!!.postingTime)
-        val diff: Long = beFakeTime.time - postingTime.time
+        val diff: Long = postingTime.time - beFakeTime.time
         val seconds = diff / 1000
         val minutes = seconds / 60
         val hours = minutes / 60
@@ -246,7 +253,7 @@ class PostsRecyclerViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
             else if (minutes > 0) "$minutes minute"
             else if (seconds > 1) "$seconds seconds"
             else "$seconds second"
-        lateTimeText += " ago"
+        lateTimeText += " late"
         return lateTimeText
     }
 

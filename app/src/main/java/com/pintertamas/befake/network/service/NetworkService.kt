@@ -5,6 +5,7 @@ import com.pintertamas.befake.network.request.JwtRequest
 import com.pintertamas.befake.network.request.UserRequest
 import com.pintertamas.befake.network.response.*
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
@@ -90,11 +91,18 @@ interface NetworkService {
     ): Call<UserResponse>
 
     @Multipart
+    @POST("/reaction")
+    fun react(
+        @Part reaction: MultipartBody.Part,
+        @Part("post") postId: Long
+    ): Call<ReactionResponse>
+
+    @Multipart
     @POST("/post/create")
     fun createPost(
         @Part mainPhoto: MultipartBody.Part,
         @Part selfiePhoto: MultipartBody.Part,
-        @Part("location") location: String
+        @Part("location") location: RequestBody
     ): Call<PostResponse>
 
     @POST("/friendlist/add/{userId}")

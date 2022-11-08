@@ -30,6 +30,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
 
@@ -46,7 +47,6 @@ class NewPostFragment(private val user: UserResponse) : Fragment(R.layout.fragme
 
     private val sharedPrefName = "user_shared_preference"
 
-    private var locationManager: LocationManager? = null
     private var locationPermission: Boolean = false
     private var cameraPermission: Boolean = false
 
@@ -176,6 +176,8 @@ class NewPostFragment(private val user: UserResponse) : Fragment(R.layout.fragme
                     }
                 }
                 ImagePicker.RESULT_ERROR -> {
+                    mainPhoto = null
+                    selfiePhoto = null
                     Constants.showErrorSnackbar(
                         requireContext(),
                         layoutInflater,
@@ -183,6 +185,8 @@ class NewPostFragment(private val user: UserResponse) : Fragment(R.layout.fragme
                     )
                 }
                 else -> {
+                    mainPhoto = null
+                    selfiePhoto = null
                     Constants.showErrorSnackbar(
                         requireContext(),
                         layoutInflater,
@@ -192,14 +196,13 @@ class NewPostFragment(private val user: UserResponse) : Fragment(R.layout.fragme
             }
         }
 
-    private fun getMultiPartTextFromString(text: String): String {
-        return RequestBody.create(
+    private fun getMultiPartTextFromString(text: String): RequestBody {
+        return text.toRequestBody(
             ("text/plain").toMediaTypeOrNull(),
-            text
-        ).toString()
+        )
     }
 
-    private fun getMultipartLocation(): String {
+    private fun getMultipartLocation(): RequestBody {
         // TODO get the location of the user and convert it to text
         return getMultiPartTextFromString("Budapest")
     }

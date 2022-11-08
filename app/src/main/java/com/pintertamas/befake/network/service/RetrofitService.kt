@@ -64,7 +64,9 @@ class RetrofitService() {
             try {
                 response = call.execute()
                 Log.d("RESPONSE_CODE", response.code().toString())
-                if (response == null || response.code() != 200) throw Exception()
+                if (response == null || !response.code().toString()
+                        .startsWith("2")
+                ) throw Exception()
                 val responseBody = response.body()!!
                 handler.post { onSuccess(response.code(), responseBody) }
             } catch (e: Exception) {
@@ -88,7 +90,9 @@ class RetrofitService() {
             try {
                 response = call.execute()
                 Log.d("RESPONSE_CODE", response.code().toString())
-                if (response == null || response.code() != 200) throw Exception()
+                if (response == null || !response.code().toString()
+                        .startsWith("2")
+                ) throw Exception()
                 val responseBody = response.body()!!
                 handler.post { onSuccess(response.code(), responseBody, param) }
             } catch (e: Exception) {
@@ -113,7 +117,9 @@ class RetrofitService() {
             try {
                 response = call.execute()
                 Log.d("RESPONSE_CODE", response.code().toString())
-                if (response == null || response.code() != 200) throw Exception()
+                if (response == null || !response.code().toString()
+                        .startsWith("2")
+                ) throw Exception()
                 val responseBody = response.body()!!
                 handler.post { onSuccess(response.code(), responseBody, filename, view) }
             } catch (e: Exception) {
@@ -365,12 +371,23 @@ class RetrofitService() {
     fun createPost(
         mainPhoto: MultipartBody.Part,
         selfiePhoto: MultipartBody.Part,
-        location: String,
+        location: RequestBody,
         onSuccess: (Int, PostResponse) -> Unit,
         onError: (Int, Throwable) -> Unit
     ) {
         val editUserRequest = networkService.createPost(mainPhoto, selfiePhoto, location)
         runCallOnBackgroundThread(editUserRequest, onSuccess, onError)
+    }
+
+    fun react(
+        reaction: MultipartBody.Part,
+        postId: Long,
+        position: Int,
+        onSuccess: (Int, ReactionResponse, Int) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val reactionRequest = networkService.react(reaction, postId)
+        runCallOnBackgroundThreadWithParameterReturn(position, reactionRequest, onSuccess, onError)
     }
 
     /*fun downloadIMageFromUrl(url: URL): ByteArray {

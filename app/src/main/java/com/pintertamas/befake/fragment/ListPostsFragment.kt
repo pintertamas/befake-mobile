@@ -1,37 +1,50 @@
 package com.pintertamas.befake.fragment
 
-import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.dhaval2404.imagepicker.ImagePicker
+import com.pintertamas.befake.FeedActivity
 import com.pintertamas.befake.R
 import com.pintertamas.befake.adapter.PostsRecyclerViewAdapter
 import com.pintertamas.befake.constant.Constants
 import com.pintertamas.befake.databinding.FragmentListPostsBinding
-import com.pintertamas.befake.network.response.CommentResponse
-import com.pintertamas.befake.network.response.PostResponse
-import com.pintertamas.befake.network.response.ReactionResponse
-import com.pintertamas.befake.network.response.UserResponse
+import com.pintertamas.befake.network.response.*
 import com.pintertamas.befake.network.service.RetrofitService
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import java.sql.Timestamp
 
 class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.fragment_list_posts),
-    EditProfileFragment.EditedUserListener {
+    EditProfileFragment.EditedUserListener, PostsRecyclerViewAdapter.ReactionListener {
 
     private var _binding: FragmentListPostsBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var network: RetrofitService
+    private lateinit var imagePicker: ImagePicker.Builder
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var beFakeTime: Timestamp
+    private var reactionOnPostID: Long? = null
+    private var reactionPosition: Int? = null
 
     private lateinit var postsRecyclerViewAdapter: PostsRecyclerViewAdapter
 
@@ -49,11 +62,102 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
 
         val token = sharedPreferences.getString("jwt", "")
         network = RetrofitService(token!!)
+
+        imagePicker = ImagePicker.with(requireActivity())
+            .cropSquare()
+            .compress(1024) // Final image size will be less than 1 MB(Optional)
+            .maxResultSize(720, 1080)    // Final image resolution will be less than 1080 x 1080
+            .cameraOnly()
+            .galleryMimeTypes(  //Exclude gif images
+                mimeTypes = arrayOf(
+                    "image/png",
+                    "image/jpg",
+                    "image/jpeg"
+                )
+            )
+
         getBeFakeTime()
         getTodaysPostByUser(user.id)
         setupRecyclerView()
 
         return binding.root
+    }
+
+    override fun reaction(postId: Long, position: Int) {
+        Log.d("REACTION", "Reacting to post: $postId")
+        reactionOnPostID = postId
+        reactionPosition = position
+        imagePicker.createIntent { intent ->
+            startForReactionImageResult.launch(intent)
+        }
+    }
+
+    private fun react(multipart: MultipartBody.Part) {
+        network.react(
+            reaction = multipart,
+            postId = reactionOnPostID!!,
+            position = reactionPosition!!,
+            onSuccess = this::onReactionSuccess,
+            onError = this::generalError,
+        )
+    }
+
+    private fun onReactionSuccess(statusCode: Int, responseBody: ReactionResponse, position: Int) {
+        Log.d("REACTION_SUCCESSFUL", "Status code: $statusCode")
+        postsRecyclerViewAdapter.notifyItemChanged(position + 1)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                Log.d("ON_ACTIVITY_RESULT", "RESULT_OK")
+            }
+            ImagePicker.RESULT_ERROR -> {
+                Log.d("ON_ACTIVITY_RESULT", "RESULT_ERROR")
+            }
+            else -> {
+                Log.d("ON_ACTIVITY_RESULT", "TASK_CANCELLED")
+            }
+        }
+    }
+
+    private val startForReactionImageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    val fileUri = data?.data!!
+                    val multipart = getMultiPartReactionImageFromUri(fileUri)
+                    if (reactionOnPostID != null && reactionPosition != null)
+                        react(multipart)
+                    reactionOnPostID = null
+                    reactionPosition = null
+                }
+                ImagePicker.RESULT_ERROR -> {
+                    Constants.showErrorSnackbar(
+                        requireContext(),
+                        layoutInflater,
+                        ImagePicker.getError(data)
+                    )
+                }
+                else -> {
+                    Constants.showErrorSnackbar(
+                        requireContext(),
+                        layoutInflater,
+                        "Upload Cancelled"
+                    )
+                }
+            }
+        }
+
+    private fun getMultiPartReactionImageFromUri(uri: Uri): MultipartBody.Part {
+        val file = File(uri.path!!)
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData("reaction", file.name, requestBody)
     }
 
     override fun onAttach(context: Context) {
@@ -190,7 +294,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
     private fun setupRecyclerView() {
         val llm = LinearLayoutManager(this.context)
         llm.orientation = LinearLayoutManager.VERTICAL
-        postsRecyclerViewAdapter = PostsRecyclerViewAdapter()
+        postsRecyclerViewAdapter = PostsRecyclerViewAdapter(this)
         val list = binding.root.findViewById<RecyclerView>(R.id.posts_recycler_view)
         list.layoutManager = llm
         list.adapter = postsRecyclerViewAdapter
