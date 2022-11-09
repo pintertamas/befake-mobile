@@ -12,13 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.pintertamas.befake.FeedActivity
 import com.pintertamas.befake.R
 import com.pintertamas.befake.adapter.PostsRecyclerViewAdapter
 import com.pintertamas.befake.constant.Constants
@@ -27,11 +25,8 @@ import com.pintertamas.befake.network.response.*
 import com.pintertamas.befake.network.service.RetrofitService
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
-import java.sql.Timestamp
 
 class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.fragment_list_posts),
     EditProfileFragment.EditedUserListener, PostsRecyclerViewAdapter.ReactionListener {
@@ -42,7 +37,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
     private lateinit var network: RetrofitService
     private lateinit var imagePicker: ImagePicker.Builder
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var beFakeTime: Timestamp
+    //private lateinit var beFakeTime: Timestamp
     private var reactionOnPostID: Long? = null
     private var reactionPosition: Int? = null
 
@@ -76,7 +71,6 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
                 )
             )
 
-        getBeFakeTime()
         getTodaysPostByUser(user.id)
         setupRecyclerView()
 
@@ -176,7 +170,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
         )
     }
 
-    private fun getBeFakeTime() {
+    /*private fun getBeFakeTime() {
         network.getBeFakeTime(
             onSuccess = this::getBeFakeTimeSuccess,
             onError = this::generalError
@@ -193,8 +187,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
         val beFakeTimeTimestamp = Constants.convertStringToTimestamp(beFakeTimeString)
         println(beFakeTimeTimestamp)
         beFakeTime = beFakeTimeTimestamp
-        postsRecyclerViewAdapter.setBeFakeTime(beFakeTime)
-    }
+    }*/
 
     private fun getTodaysPostByUser(userId: Long) {
         network.getTodaysPostByUser(
@@ -294,7 +287,7 @@ class ListPostsFragment(private var user: UserResponse) : Fragment(R.layout.frag
     private fun setupRecyclerView() {
         val llm = LinearLayoutManager(this.context)
         llm.orientation = LinearLayoutManager.VERTICAL
-        postsRecyclerViewAdapter = PostsRecyclerViewAdapter(this)
+        postsRecyclerViewAdapter = PostsRecyclerViewAdapter(this, requireActivity())
         val list = binding.root.findViewById<RecyclerView>(R.id.posts_recycler_view)
         list.layoutManager = llm
         list.adapter = postsRecyclerViewAdapter

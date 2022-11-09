@@ -1,6 +1,5 @@
 package com.pintertamas.befake.network.service
 
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable
 import com.pintertamas.befake.network.request.JwtRequest
 import com.pintertamas.befake.network.request.UserRequest
 import com.pintertamas.befake.network.response.*
@@ -105,6 +104,12 @@ interface NetworkService {
         @Part("location") location: RequestBody
     ): Call<PostResponse>
 
+    @PATCH("/post/{postId}")
+    fun addDescription(
+        @Path("postId") postId: Long,
+        @Query("description") description: String
+    ): Call<PostResponse>
+
     @POST("/friendlist/add/{userId}")
     fun addFriend(
         @Path("userId") userId: Long
@@ -130,4 +135,10 @@ interface NetworkService {
     fun getUserByUserId(
         @Path("userId") userId: Long
     ): Call<UserResponse>
+
+    @POST("/comment")
+    fun comment(
+        @Query("comment") comment: String,
+        @Query("post") post: Long
+    ): Call<CommentResponse>
 }

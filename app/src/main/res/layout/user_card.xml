@@ -68,17 +68,23 @@
             android:src="@drawable/threetotwo" />
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/description"
+    <EditText
+        android:id="@+id/et_description"
         android:layout_width="0dp"
+        android:textSize="16sp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="25dp"
-        android:layout_marginBottom="10dp"
-        android:contentDescription="@string/description"
-        android:text="@string/lorem_ipsum"
+        android:background="@color/transparent"
+        android:hint="@string/add_description"
+        android:imeOptions="actionDone"
+        android:maxLines="2"
+        android:lines="2"
+        android:maxLength="50"
+        android:inputType="textNoSuggestions"
         android:textColor="@color/light_grey"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColorHint="@color/light_grey"
+        app:layout_constraintEnd_toEndOf="@id/user_card"
         app:layout_constraintStart_toEndOf="@+id/main_photo_card"
         app:layout_constraintTop_toTopOf="@id/user_card" />
 
@@ -87,22 +93,22 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
         android:contentDescription="@string/description"
-        android:text="@string/comments"
+        android:text="@string/see_comments"
         android:textColor="@color/dark_grey"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.609"
         app:layout_constraintStart_toEndOf="@+id/main_photo_card"
-        app:layout_constraintTop_toBottomOf="@id/description" />
+        app:layout_constraintTop_toBottomOf="@+id/et_description" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/reaction1"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_margin="25dp"
         android:layout_marginVertical="20dp"
         android:src="@color/black"
-        android:layout_margin="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -110,8 +116,8 @@
         android:id="@+id/reaction2"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@color/dark_blue"
         android:layout_marginHorizontal="30dp"
+        android:src="@color/dark_blue"
         app:layout_constraintBottom_toBottomOf="@id/reaction1"
         app:layout_constraintEnd_toEndOf="@id/reaction1" />
 

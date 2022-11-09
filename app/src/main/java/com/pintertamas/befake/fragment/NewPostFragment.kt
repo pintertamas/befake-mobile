@@ -252,6 +252,7 @@ class NewPostFragment(private val user: UserResponse) : Fragment(R.layout.fragme
         val fragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container_view, fragment, tag)
+        requireActivity().findViewById<View>(R.id.toolbar).visibility = View.VISIBLE
         fragmentTransaction.addToBackStack(fragment.id.toString())
         fragmentTransaction.commit()
     }

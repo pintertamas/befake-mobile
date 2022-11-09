@@ -5,8 +5,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.widget.addTextChangedListener
 import com.pintertamas.befake.constant.Constants
 import com.pintertamas.befake.databinding.ActivityLoginBinding
@@ -18,6 +21,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var network: RetrofitService
     private lateinit var sharedPreferences: SharedPreferences
+    private var inputMethodManager: InputMethodManager? = null
 
     private var isUsernameCorrect: Boolean = false
     private var isPasswordCorrect: Boolean = false
@@ -43,6 +47,23 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString()
 
             login(username, password)
+        }
+
+        binding.btnLogin.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (inputMethodManager == null) {
+                    inputMethodManager = binding.root.context.getSystemService(
+                        INPUT_METHOD_SERVICE
+                    ) as InputMethodManager
+                }
+                inputMethodManager!!.hideSoftInputFromWindow(
+                    binding.btnLogin.windowToken,
+                    0
+                )
+                true
+            } else {
+                false
+            }
         }
 
         binding.btnRegister.setOnClickListener {
@@ -101,6 +122,9 @@ class LoginActivity : AppCompatActivity() {
             onSuccess = this::loginSuccess,
             onError = this::loginError,
         )
+        (binding.root.context
+            .getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+            .hideSoftInputFromWindow(binding.btnLogin.windowToken, 0)
     }
 
     private fun loginSuccess(statusCode: Int, responseBody: JwtResponse) {

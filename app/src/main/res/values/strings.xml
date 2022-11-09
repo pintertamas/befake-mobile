@@ -28,8 +28,9 @@
     <string name="settings_button">settings button</string>
     <string name="main_photo">main photo</string>
     <string name="description">description</string>
+    <string name="add_description">Add description</string>
     <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
-    <string name="comments">See n comment</string>
+    <string name="see_comments">See n comment</string>
     <string name="reaction_icon">reaction icon</string>
     <string name="comment_icon">comment icon</string>
     <string name="left_arrow_button">left arrow button</string>
@@ -59,4 +60,12 @@
     <string name="friend_requests">Friend requests</string>
     <string name="friend_list">Friends</string>
     <string name="no_friends_message">Search for friends so you can share your moments with them!</string>
+    <string name="reactions">Reactions</string>
+    <string name="comments">Comments</string>
+    <string name="interactions">Interactions</string>
+    <string name="comment_lorem">In publishing and graphic design, Lorem ipsum is a placeholder text. In publishing and graphic design, Lorem ipsum is a placeholder text</string>
+    <string name="remove_comment_button">remove comment button</string>
+    <string name="delete_this_comment">Delete this comment</string>
+    <string name="send">Send</string>
+    <string name="add_comment">Add comment...</string>
 </resources>

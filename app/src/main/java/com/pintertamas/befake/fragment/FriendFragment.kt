@@ -44,7 +44,7 @@ class FriendFragment(private val userList: List<UserResponse>) :
 
             val myFriendsFragment: Fragment = MyFriendsFragment.newInstance()
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.friend_fragment_container, myFriendsFragment)
+                .replace(R.id.friend_fragment_container, myFriendsFragment, "FRIEND_FRAGMENT")
                 .commit()
         }
 
@@ -57,7 +57,7 @@ class FriendFragment(private val userList: List<UserResponse>) :
 
             val myFriendsFragment: Fragment = UsersFragment.newInstance(userList)
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.friend_fragment_container, myFriendsFragment)
+                .replace(R.id.friend_fragment_container, myFriendsFragment, "FRIEND_FRAGMENT")
                 .commit()
         }
         return binding.root

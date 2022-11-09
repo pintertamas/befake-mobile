@@ -1,6 +1,5 @@
 package com.pintertamas.befake.network.service
 
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -15,14 +14,7 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.Url
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.net.URL
 import kotlin.concurrent.thread
-import kotlin.reflect.KFunction2
 
 class RetrofitService() {
 
@@ -388,6 +380,26 @@ class RetrofitService() {
     ) {
         val reactionRequest = networkService.react(reaction, postId)
         runCallOnBackgroundThreadWithParameterReturn(position, reactionRequest, onSuccess, onError)
+    }
+
+    fun addDescription(
+        postId: Long,
+        description: String,
+        onSuccess: (Int, PostResponse) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val reactionRequest = networkService.addDescription(postId, description)
+        runCallOnBackgroundThread(reactionRequest, onSuccess, onError)
+    }
+
+    fun comment(
+        postId: Long,
+        comment: String,
+        onSuccess: (Int, CommentResponse) -> Unit,
+        onError: (Int, Throwable) -> Unit
+    ) {
+        val commentRequest = networkService.comment(comment, postId)
+        runCallOnBackgroundThread(commentRequest, onSuccess, onError)
     }
 
     /*fun downloadIMageFromUrl(url: URL): ByteArray {

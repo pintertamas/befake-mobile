@@ -44,10 +44,10 @@ class Constants {
         }
 
         @SuppressLint("SimpleDateFormat")
-        fun convertStringToTimestamp(beFakeTimeString: String): Timestamp {
+        fun convertStringToTimestamp(timeString: String): Timestamp {
             val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
             val sdf = SimpleDateFormat(pattern)
-            val parsedDate = sdf.parse(beFakeTimeString)
+            val parsedDate = sdf.parse(timeString)
             return Timestamp(parsedDate?.time ?: 0)
         }
     }

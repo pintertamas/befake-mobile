@@ -49,6 +49,7 @@ class ProfileFragment(
         binding.backButton.setOnClickListener {
             Log.d("BACK_ARROW", "Click")
             parentFragmentManager.popBackStack()
+            requireActivity().findViewById<View>(R.id.toolbar).visibility = View.VISIBLE
         }
 
         binding.editButton.setOnClickListener {
