@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pintertamas.befake.R
 import com.pintertamas.befake.adapter.CommentsRecyclerViewAdapter
 import com.pintertamas.befake.adapter.ReactionsRecyclerViewAdapter
+import com.pintertamas.befake.database.repository.CacheService
 import com.pintertamas.befake.databinding.FragmentCommentsBinding
 import com.pintertamas.befake.databinding.FragmentReactionsBinding
 import com.pintertamas.befake.network.response.CommentResponse
@@ -38,6 +39,7 @@ class ReactionsFragment(
 
     private lateinit var network: RetrofitService
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var cache: CacheService
 
     private val sharedPrefName = "user_shared_preference"
 
@@ -75,6 +77,8 @@ class ReactionsFragment(
             goToComments(fragment, "COMMENTS")
         }
 
+        cache = CacheService.getInstance()!!
+        cache.cacheProfilePicture(post.userId, binding.userPost.commenterProfilePicture)
         binding.userPost.commenterName.text = post.username
         binding.userPost.commentText.text = post.description
         binding.userPost.lateTime.text =
@@ -101,7 +105,7 @@ class ReactionsFragment(
         requireActivity().supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_container_view, fragment, tag)
-            .addToBackStack(fragment.id.toString())
+            //.addToBackStack(fragment.id.toString())
             .commit()
     }
 

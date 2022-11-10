@@ -42,6 +42,8 @@ class CommentsRecyclerViewAdapter :
         val token = sharedPreferences.getString("jwt", "")
         network = RetrofitService(token!!)
 
+        cache = CacheService.getInstance()!!
+
         return CommentItemViewHolder(
             CommentItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
@@ -68,8 +70,10 @@ class CommentsRecyclerViewAdapter :
             binding.commenterName.text = commentList[position].username
             binding.commentText.text = commentList[position].text
             binding.lateTime.text = Functions.calculateTimeAgo(commentList[position].commentTime)
+            cache.cacheProfilePicture(commentList[position].userId, binding.commenterProfilePicture)
         }
     }
+
 
     fun addComment(comment: CommentResponse) {
         val size = commentList.size
