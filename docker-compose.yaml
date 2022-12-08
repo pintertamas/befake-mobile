@@ -18,12 +18,7 @@ services:
     networks:
       - befake-network
     environment:
-      #KAFKA_ADVERTISED_PORT: 9092
-      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      #KAFKA_ADVERTISED_HOST_NAME: localhost
-      #HOSTNAME_COMMAND: "ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $$1}'"
       HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
-      #BROKER_ID_COMMAND: "hostname | awk -F'-' '{print $$2}'"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_MESSAGE_MAX_BYTES: 2000000
       KAFKA_CREATE_TOPICS: "befake:2:3,registration:2:3,post:2:3,comment:2:3,reaction:2:3,friend:2:3"
