@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "683674581066",
+    "project_id": "befake-efef7",
+    "storage_bucket": "befake-efef7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:683674581066:android:a91da24d9aca4d6fd38eb3",
+        "android_client_info": {
+          "package_name": "com.pintertamas.befake"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "683674581066-93selqqsio36fnbh8eofor2uqtubl9vf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzsWaJ9EuonUuHroeri0l4rN6x_5SwW-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "683674581066-93selqqsio36fnbh8eofor2uqtubl9vf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,203 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - befake-network
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  kafka:
+    image: wurstmeister/kafka
+    links:
+      - zookeeper:zookeeper
+    ports:
+      - '9092:9092'
+    networks:
+      - befake-network
+    environment:
+      #KAFKA_ADVERTISED_PORT: 9092
+      #KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      #KAFKA_ADVERTISED_HOST_NAME: localhost
+      #HOSTNAME_COMMAND: "ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $$1}'"
+      HOSTNAME_COMMAND: "route -n | awk '/UG[ \t]/{print $$2}'"
+      #BROKER_ID_COMMAND: "hostname | awk -F'-' '{print $$2}'"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_MESSAGE_MAX_BYTES: 2000000
+      KAFKA_CREATE_TOPICS: "befake:2:3,registration:2:3,post:2:3,comment:2:3,reaction:2:3,friend:2:3"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - zookeeper
+    restart: always
+
+  api-gateway:
+    image: pintertamas/api-gateway:docker
+    ports:
+      - "8765:8765"
+    networks:
+      - befake-network
+    depends_on:
+      - naming-server
+      - rabbitmq
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411
+      RABBIT_URI: amqp://guest@rabbitmq:5672
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+
+  naming-server:
+    image: pintertamas/naming-server:docker
+    ports:
+      - "8761:8761"
+    networks:
+      - befake-network
+
+  zipkin-server:
+    image: openzipkin/zipkin:2.23
+    ports:
+      - "9411:9411"
+    networks:
+      - befake-network
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+    restart: always #Restart if there is a problem starting up
+
+  rabbitmq:
+    image: rabbitmq:3.8.34-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - befake-network
+
+  auth-service:
+    image: pintertamas/authorization-service:docker
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - befake-network
+    depends_on:
+      - naming-server
+      - api-gateway
+      - user-service
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411
+
+  friend-service:
+    image: pintertamas/friend-service:docker
+    restart: always
+    ports:
+      - "8003:8003"
+    networks:
+      - befake-network
+    depends_on:
+      - naming-server
+      - api-gateway
+      - kafka
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411
+      SPRING.DATASOURCE.URL: jdbc:postgresql://host.docker.internal:5432/friend-service
+      SPRING.DATASOURCE.USERNAME: postgres
+      SPRING.DATASOURCE.PASSWORD: postgres
+      KAFKA.URL: kafka:9092
+
+  interaction-service:
+    image: pintertamas/interaction-service:docker
+    restart: always
+    ports:
+      - "8002:8002"
+    networks:
+      - befake-network
+    depends_on:
+      - naming-server
+      - api-gateway
+      - kafka
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411
+      SPRING.DATASOURCE.URL: jdbc:postgresql://host.docker.internal:5432/interaction-service
+      SPRING.DATASOURCE.USERNAME: postgres
+      SPRING.DATASOURCE.PASSWORD: postgres
+      KAFKA.URL: kafka:9092
+
+  notification-service:
+    image: pintertamas/notification-service:docker
+    restart: always
+    ports:
+      - "8101:8101"
+    networks:
+      - befake-network
+    depends_on:
+      - naming-server
+      - api-gateway
+      - kafka
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411
+      KAFKA.URL: kafka:9092
+
+  post-service:
+    image: pintertamas/post-service:docker
+    restart: always
+    ports:
+      - "8001:8001"
+    networks:
+      - befake-network
+    depends_on:
+      - naming-server
+      - api-gateway
+      - kafka
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411
+      SPRING.DATASOURCE.URL: jdbc:postgresql://host.docker.internal:5432/post-service
+      SPRING.DATASOURCE.USERNAME: postgres
+      SPRING.DATASOURCE.PASSWORD: postgres
+      KAFKA.URL: kafka:9092
+
+  time-service:
+    image: pintertamas/time-service:docker
+    restart: always
+    ports:
+      - "8081:8081"
+    networks:
+      - befake-network
+    depends_on:
+      - naming-server
+      - api-gateway
+      - kafka
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411
+      KAFKA.URL: kafka:9092
+
+  user-service:
+    image: pintertamas/user-service:docker
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - befake-network
+    depends_on:
+      - naming-server
+      - api-gateway
+      - kafka
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411
+      SPRING.DATASOURCE.URL: jdbc:postgresql://host.docker.internal:5432/user-service
+      SPRING.DATASOURCE.USERNAME: postgres
+      SPRING.DATASOURCE.PASSWORD: postgres
+      KAFKA.URL: kafka:9092
+
+networks:
+  befake-network:
